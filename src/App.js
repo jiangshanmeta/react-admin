@@ -1,21 +1,51 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+import {
+    BrowserRouter as Router,
+    Link,
+    Route,
+    Switch,
+} from "react-router-dom"
+
+import router from "./router"
+
+export default class App extends React.Component {
+
+    renderRouter(){
+        return (
+            <Switch>
+                {router.map((item,key)=>{
+                    return (
+                        <Route
+                            key={key}
+                            path={item.path}
+                            exact={item.exact}
+                            render={(props)=>{
+                                return (
+                                    <item.component
+                                        {...props}
+                                        meta={item.meta}
+                                    ></item.component>
+                                )
+                            }}
+                        ></Route>
+                    );
+                })}
+            </Switch>
+        )
+    }
+
+    render(){
+        return (
+            <Router>
+                <div>
+                    <Link to="/test/test_basic">测试页面</Link>
+
+                    <Link to="/404">not match page</Link>
+
+                    {this.renderRouter()}
+                </div>
+            </Router>
+        )
+    }
 }
-
-export default App;
