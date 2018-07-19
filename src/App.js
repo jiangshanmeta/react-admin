@@ -2,12 +2,15 @@ import React from 'react';
 
 import {
     BrowserRouter as Router,
-    Link,
     Route,
     Switch,
 } from "react-router-dom"
 
+import AppHeader from "@/components/index/AppHeader"
+import AppMenu from "@/components/index/AppMenu"
+
 import router from "./router"
+import "./App.css"
 
 export default class App extends React.Component {
 
@@ -38,12 +41,14 @@ export default class App extends React.Component {
     render(){
         return (
             <Router>
-                <div>
-                    <Link to="/test/test_basic">测试页面</Link>
-
-                    <Link to="/404">not match page</Link>
-
-                    {this.renderRouter()}
+                <div id="app">
+                    <AppHeader></AppHeader>
+                    <div id="app-main">
+                        <Route component={AppMenu}></Route>
+                        <div id="app-content">
+                            {this.renderRouter()}
+                        </div>
+                    </div>
                 </div>
             </Router>
         )

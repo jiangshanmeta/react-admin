@@ -6,7 +6,7 @@ export default{
         {
             path:"/test/test_basic",
             label:"基础editor",
-            component:()=>import("@/pages/test/test_basic"),
+            component:()=>import("@/pages/test/Test_basic"),
             meta:{
                 title:"test_basic",
             },

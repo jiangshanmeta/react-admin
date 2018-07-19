@@ -10,6 +10,7 @@ function loading(){
 
 const routes = menu.reduce((arr,{pages=[]})=>{
     pages.forEach((item)=>{
+        item.exact = true;
         item.component = Loadable({
             loader:item.component,
             loading,
