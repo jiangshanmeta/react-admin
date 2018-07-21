@@ -1,26 +1,75 @@
 import React from 'react';
 
 import FieldString from "@/components/common/editor/FieldString"
-
-// import {
-//     Input 
-// } from 'element-react'
+import FieldText from "@/components/common/editor/FieldText"
+import FieldPwd from "@/components/common/editor/FieldPwd"
 
 export default class Test_basic extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            FieldString:""
+            FieldString:"",
+            FieldText:"",
+            FieldPwd:"",
         };
-        this.handleChange = this.handleChange.bind(this)
-        console.log(this.props)
+        this.handleFieldStringChange = this.handleChange.bind(this,'FieldString');
+        this.handleFieldTextChange = this.handleChange.bind(this,'FieldText');
+        this.handleFieldPwdChange = this.handleChange.bind(this,'FieldPwd');
     }
 
-    handleChange(value){
+    handleChange(field,value){
         // console.log(value);
         this.setState({
-            FieldString:value,
+            [field]:value,
         })
+    }
+
+    renderFieldString(){
+        return (
+            <tr>
+                <td>FieldString</td>
+                <td>{this.state.FieldString}</td>
+                <td>
+                    <FieldString
+                        value={this.state.FieldString}
+                        onChange={this.handleFieldStringChange}
+                        placeholder="请输入"
+                    ></FieldString>
+                </td>
+            </tr>
+        )
+    }
+
+    renderFieldText(){
+        return (
+            <tr>
+                <td>FieldText</td>
+                <td>{this.state.FieldText}</td>
+                <td>
+                    <FieldText
+                        value={this.state.FieldText}
+                        onChange={this.handleFieldTextChange}
+                        placeholder="测试textarea"
+                    ></FieldText>
+                </td>
+            </tr>            
+        )
+    }
+
+    renderFieldPwd(){
+        return (
+            <tr>
+                <td>FieldPwd</td>
+                <td>{this.state.FieldPwd}</td>
+                <td>
+                    <FieldPwd
+                        value={this.state.FieldPwd}
+                        onChange={this.handleFieldPwdChange}
+                        placeholder="测试FieldPwd"
+                    ></FieldPwd>
+                </td>
+            </tr>            
+        )
     }
 
     render(){
@@ -34,23 +83,11 @@ export default class Test_basic extends React.Component{
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>FieldString</td>
-                        <td>{this.state.FieldString}</td>
-                        <td>
-                            <FieldString
-                                value={this.state.FieldString}
-                                onChange={this.handleChange}
-                            ></FieldString>
-                        </td>
-                    </tr>
+                    {this.renderFieldString()}
+                    {this.renderFieldText()}
+                    {this.renderFieldPwd()}
                 </tbody>
             </table>
-            // <section>
-            //     测试基础editor页面
-
-            //     <Input value={this.state.fieldString} onChange={this.handleChange}/>
-            // </section>
         )
     }
 }
