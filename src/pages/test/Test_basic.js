@@ -3,6 +3,7 @@ import React from 'react';
 import FieldString from "@/components/common/editor/FieldString"
 import FieldText from "@/components/common/editor/FieldText"
 import FieldPwd from "@/components/common/editor/FieldPwd"
+import FieldNumber from "@/components/common/editor/FieldNumber"
 
 export default class Test_basic extends React.Component{
     constructor(props){
@@ -11,10 +12,12 @@ export default class Test_basic extends React.Component{
             FieldString:"",
             FieldText:"",
             FieldPwd:"",
+            FieldNumber:'0',
         };
         this.handleFieldStringChange = this.handleChange.bind(this,'FieldString');
         this.handleFieldTextChange = this.handleChange.bind(this,'FieldText');
         this.handleFieldPwdChange = this.handleChange.bind(this,'FieldPwd');
+        this.handleFieldNumberChange = this.handleChange.bind(this,'FieldNumber')
     }
 
     handleChange(field,value){
@@ -72,6 +75,22 @@ export default class Test_basic extends React.Component{
         )
     }
 
+    renderFieldNumber(){
+        return (
+            <tr>
+                <td>FieldNumber</td>
+                <td>{this.state.FieldNumber} || {typeof this.state.FieldNumber}</td>
+                <td>
+                    <FieldNumber
+                        value={this.state.FieldNumber}
+                        onChange={this.handleFieldNumberChange}
+                        
+                    />
+                </td>
+            </tr>
+        )
+    }
+
     render(){
         return (
             <table className="table">
@@ -86,6 +105,7 @@ export default class Test_basic extends React.Component{
                     {this.renderFieldString()}
                     {this.renderFieldText()}
                     {this.renderFieldPwd()}
+                    {this.renderFieldNumber()}
                 </tbody>
             </table>
         )
