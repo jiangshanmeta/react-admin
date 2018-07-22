@@ -8,19 +8,22 @@ import withHandleChange from "./_withHandleChange"
 
 class FieldNumber extends React.Component{
     render(){
-        let {value,onChange,defaultValue=0,...restProps} = this.props;
-        
-        let numberValue = Number(value);
-        if(typeof numberValue !== 'number' || Number.isNaN(numberValue)){
-            numberValue = defaultValue;
-            onChange(numberValue)
+        let {value,...restProps} = this.props;
+        delete restProps.defaultValue;
+
+        let numberValue;
+        if(value !== undefined){
+            numberValue = Number(value);
+            if(Number.isNaN(numberValue)){
+                console.error("invalid value for FieldNumber");
+                return null;
+            }
         }
 
         return (
             <InputNumber
                 value={numberValue}
                 defaultValue={numberValue}
-                onChange={onChange}
                 {...restProps}
             />
         )

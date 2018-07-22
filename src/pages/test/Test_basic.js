@@ -4,6 +4,7 @@ import FieldString from "@/components/common/editor/FieldString"
 import FieldText from "@/components/common/editor/FieldText"
 import FieldPwd from "@/components/common/editor/FieldPwd"
 import FieldNumber from "@/components/common/editor/FieldNumber"
+import FieldInt from "@/components/common/editor/FieldInt"
 
 export default class Test_basic extends React.Component{
     constructor(props){
@@ -12,12 +13,15 @@ export default class Test_basic extends React.Component{
             FieldString:"",
             FieldText:"",
             FieldPwd:"",
-            FieldNumber:'0',
+            FieldNumber:10,
+            FieldInt:1,
         };
         this.handleFieldStringChange = this.handleChange.bind(this,'FieldString');
         this.handleFieldTextChange = this.handleChange.bind(this,'FieldText');
         this.handleFieldPwdChange = this.handleChange.bind(this,'FieldPwd');
         this.handleFieldNumberChange = this.handleChange.bind(this,'FieldNumber')
+        this.handleFieldIntChange = this.handleChange.bind(this,'FieldInt')
+    
     }
 
     handleChange(field,value){
@@ -84,7 +88,22 @@ export default class Test_basic extends React.Component{
                     <FieldNumber
                         value={this.state.FieldNumber}
                         onChange={this.handleFieldNumberChange}
-                        
+                    />
+                </td>
+            </tr>
+        )
+    }
+
+    renderFieldInt(){
+        return (
+            <tr>
+                <td>FieldInt</td>
+                <td>{this.state.FieldInt} || {typeof this.state.FieldInt}</td>
+                <td>
+                    <FieldInt
+                        value={this.state.FieldInt}
+                        onChange={this.handleFieldIntChange}
+
                     />
                 </td>
             </tr>
@@ -106,6 +125,7 @@ export default class Test_basic extends React.Component{
                     {this.renderFieldText()}
                     {this.renderFieldPwd()}
                     {this.renderFieldNumber()}
+                    {this.renderFieldInt()}
                 </tbody>
             </table>
         )
