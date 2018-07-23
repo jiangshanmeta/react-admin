@@ -1,33 +1,43 @@
 import React from 'react';
-
+import PropTypes from "prop-types";
 import {
     InputNumber
-} from 'element-react'
+} from 'element-react';
 
-import withHandleChange from "./_withHandleChange"
 
-class FieldNumber extends React.Component{
-    render(){
-        let {value,...restProps} = this.props;
-        delete restProps.defaultValue;
+export default class FieldNumber extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
 
-        let numberValue;
-        if(value !== undefined){
-            numberValue = Number(value);
-            if(Number.isNaN(numberValue)){
-                console.error("invalid value for FieldNumber");
-                return null;
-            }
+    handleChange(value){
+        if(value === undefined){
+            value = 0;
         }
+        this.props.onChange(value);
+    }
+
+    render(){
+        let {
+            value,
+            ...restProps
+        } = this.props;
+        delete restProps.onChange;
+        delete restProps.defaultValue;
 
         return (
             <InputNumber
-                value={numberValue}
-                defaultValue={numberValue}
+                value={value}
+                defaultValue={value}
+                onChange={this.handleChange}
                 {...restProps}
             />
         )
     }
 }
 
-export default withHandleChange(FieldNumber);
+FieldNumber.propTypes = {
+    value:PropTypes.number.isRequired,
+    onChange:PropTypes.func.isRequired,
+}

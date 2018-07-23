@@ -1,6 +1,9 @@
 import React from "react";
+import PropTypes from "prop-types";
+import {
+    Input
+} from "element-react";
 
-import FieldNumber from "./FieldNumber"
 
 export default class FieldInt extends React.Component{
     constructor(props){
@@ -9,39 +12,47 @@ export default class FieldInt extends React.Component{
     }
 
     handleChange(value){
-        let intValue;
-        if(value !== undefined){
-            intValue = Number.parseInt(value,10);
-            // 和element-react的InputNumber逻辑一致
-            // 无效值时直接重置为undefined
-            if(intValue !== value){
-                intValue = undefined;
-            }
-
+        if(value === ""){
+            value = 0;
         }
 
-        this.props.onChange && this.props.onChange(intValue);
+        const intValue = Number.parseInt(value,10);
+        if(Number.isNaN(intValue)){
+            return;
+        }
+
+        this.props.onChange(intValue);
     }
 
     render(){
-        const {value,onChange,defaultValue=0,...restProps} = this.props;
+        const {
+            value,
+            ...restProps
+        } = this.props;
 
-        let intValue;
-        if(value !== undefined){
-            intValue = Number.parseInt(value,10);
-            if(intValue !== value){
-                console.error("invalid value for FieldInt");
-                return null;
-            }
-        }
+        delete restProps.onChange;
 
         return (
-            <FieldNumber
-                value={intValue}
-                defaultValue={intValue}
+            <Input
+                value={value}
                 onChange={this.handleChange}
                 {...restProps}
             />
         )
     }
+}
+
+FieldInt.propTypes = {
+    value(props,propName){
+        const value = props[propName];
+        if(value === undefined){
+            return new Error(`value is required for FieldInt`);
+        }
+
+        const intValue = Number.parseInt(value,10);
+        if(value !== intValue){
+            return new Error("Int number is required for FieldInt");
+        }
+    },
+    onChange:PropTypes.func.isRequired,
 }

@@ -10,6 +10,11 @@ export default{
             meta:{
                 title:"test_basic",
             },
+        },
+        {
+            path:"/test/test_enum",
+            label:"枚举editor",
+            component:()=>import("@/pages/test/Test_enum"),
         }
     ],
 
