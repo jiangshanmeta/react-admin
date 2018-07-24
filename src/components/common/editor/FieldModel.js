@@ -4,7 +4,7 @@ import {
     Select
 } from "element-react"
 
-export default class FieldEnumSelect extends React.Component{
+export default class FieldModel extends React.Component{
 
     render(){
         const {
@@ -16,10 +16,13 @@ export default class FieldEnumSelect extends React.Component{
             ...restProps,
         } = this.props;
 
+        delete restProps.filterable;
+
         return (
             <Select 
                 value={value} 
                 onChange={onChange}
+                filterable={true}
                 {...restProps}
             >
                 {candidate.map((item)=>{
@@ -36,13 +39,13 @@ export default class FieldEnumSelect extends React.Component{
     }
 }
 
-FieldEnumSelect.propTypes = {
+FieldModel.propTypes = {
     value:PropTypes.any.isRequired,
     onChange:PropTypes.func.isRequired,
     candidate:PropTypes.array.isRequired,
 }
 
-FieldEnumSelect.defaultProps = {
+FieldModel.defaultProps = {
     valuefield:"value",
     labelfield:"label",
 }
