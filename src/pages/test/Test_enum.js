@@ -5,12 +5,21 @@ import FieldEnumSelect from "@/components/common/editor/FieldEnumSelect"
 import FieldModel from "@/components/common/editor/FieldModel"
 
 import FieldAsyncEnumRadio from "@/components/common/editor/FieldAsyncEnumRadio"
+import FieldAsyncEnumSelect from "@/components/common/editor/FieldAsyncEnumSelect"
+import FieldAsyncModel from "@/components/common/editor/FieldAsyncModel"
+
 
 const FieldEnumRadioCandidate = [
     {label:"item0",value:0},
     {label:"item1",value:1},
     {label:"item2",value:2},
 ]
+
+function aaa(){
+    console.log(123)
+    return FieldEnumRadioCandidate
+}
+
 
 const FieldEnumSelectCandidate = [
     {label:"itemA",value:0},
@@ -44,14 +53,27 @@ export default class Test_enum extends React.Component{
             FieldEnumSelect:1,
             FieldModel:0,
             FieldAsyncEnumRadio:1,
+            FieldAsyncEnumSelect:2,
+            FieldAsyncModel:6,
         }
 
-        this.handleFieldEnumRadioChange = this.handleChange.bind(this,'FieldEnumRadio')
-        this.handleFieldEnumSelectChange = this.handleChange.bind(this,'FieldEnumSelect')
-        this.handleFieldModelChange = this.handleChange.bind(this,'FieldModel');
+        const fields = [
+            "FieldEnumRadio",
+            "FieldEnumSelect",
+            "FieldModel",
+            "FieldAsyncEnumRadio",
+            "FieldAsyncEnumSelect",
+            "FieldAsyncModel",
+        ];
 
-        this.handleFieldAsyncEnumRadioChange = this.handleChange.bind(this,'FieldAsyncEnumRadio');
+        fields.forEach((field)=>{
+            this[`handle${field}Change`] = this.handleChange.bind(this,field);
+        })
 
+        this.getAsyncEnumRadioCandidate = this.getAsyncCandidate.bind(null,FieldEnumRadioCandidate)
+        this.getAsyncEnumSelectCandidate = this.getAsyncCandidate.bind(null,FieldEnumSelectCandidate)
+        this.getAsyncModelCandidate = this.getAsyncCandidate.bind(null,FieldModelCandidate)
+    
     }
 
 
@@ -109,11 +131,10 @@ export default class Test_enum extends React.Component{
         )
     }
 
-    getAsyncEnumRadioCandidate(cb){
+    getAsyncCandidate(enums,cb){
         setTimeout(()=>{
-            cb(FieldEnumRadioCandidate)
-        },1000)
-        
+            cb(enums);
+        },1000);
     }
 
     renderFieldAsyncEnumRadio(){
@@ -126,6 +147,38 @@ export default class Test_enum extends React.Component{
                         value={this.state.FieldAsyncEnumRadio}
                         onChange={this.handleFieldAsyncEnumRadioChange}
                         getCandidate={this.getAsyncEnumRadioCandidate}
+                    />
+                </td>
+            </tr>
+        )
+    }
+
+    renderFieldAsyncEnumSelect(){
+        return (
+            <tr>
+                <td>FieldAsyncEnumSelect</td>
+                <td>{this.state.FieldAsyncEnumSelect}</td>
+                <td>
+                    <FieldAsyncEnumSelect
+                        value={this.state.FieldAsyncEnumSelect}
+                        onChange={this.handleFieldAsyncEnumSelectChange}
+                        getCandidate={this.getAsyncEnumSelectCandidate}
+                    />
+                </td>
+            </tr>
+        );
+    }
+
+    renderFieldAsynModel(){
+        return (
+            <tr>
+                <td>FieldAsyncModel</td>
+                <td>{this.state.FieldAsyncModel}</td>
+                <td>
+                    <FieldAsyncModel
+                        value={this.state.FieldAsyncModel}
+                        onChange={this.handleFieldModelChange}
+                        getCandidate={this.getAsyncModelCandidate}
                     />
                 </td>
             </tr>
@@ -147,6 +200,8 @@ export default class Test_enum extends React.Component{
                     {this.renderFieldEnumSelect()}
                     {this.renderFieldModel()}
                     {this.renderFieldAsyncEnumRadio()}
+                    {this.renderFieldAsyncEnumSelect()}
+                    {this.renderFieldAsynModel()}
                 </tbody>
             </table>
         );
