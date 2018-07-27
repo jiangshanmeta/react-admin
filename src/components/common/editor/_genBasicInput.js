@@ -1,8 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
     Input
 } from "element-react"
+
+import propsModelMixin from "./_propsModelMixin"
 
 export default function genBasicInput(type){
     class FieldBasic extends React.Component{
@@ -16,9 +17,7 @@ export default function genBasicInput(type){
         }
     }
 
-    FieldBasic.propTypes = {
-        value:PropTypes.any.isRequired,
-        onChange:PropTypes.func.isRequired,
-    }
+    propsModelMixin(FieldBasic);
+
     return FieldBasic
 }

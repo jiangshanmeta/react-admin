@@ -1,15 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
     Select
-} from "element-react"
+} from "element-react";
+
+import propsModelMixin from "./_propsModelMixin"
+import propsLabelValueMixin from "./_propsLabelValueMixin";
+import propsCandidateMixin from "./_propsCandidateMixin";
 
 export default class FieldModel extends React.Component{
 
     render(){
         const {
-            value,
-            onChange,
             candidate,
             valuefield,
             labelfield,
@@ -19,9 +20,7 @@ export default class FieldModel extends React.Component{
         delete restProps.filterable;
 
         return (
-            <Select 
-                value={value} 
-                onChange={onChange}
+            <Select
                 filterable={true}
                 {...restProps}
             >
@@ -39,13 +38,7 @@ export default class FieldModel extends React.Component{
     }
 }
 
-FieldModel.propTypes = {
-    value:PropTypes.any.isRequired,
-    onChange:PropTypes.func.isRequired,
-    candidate:PropTypes.array.isRequired,
-}
 
-FieldModel.defaultProps = {
-    valuefield:"value",
-    labelfield:"label",
-}
+propsModelMixin(FieldModel);
+propsLabelValueMixin(FieldModel);
+propsCandidateMixin(FieldModel);

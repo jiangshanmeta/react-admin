@@ -1,15 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
     Select
-} from "element-react"
+} from "element-react";
+
+import propsModelMixin from "./_propsModelMixin";
+import propsLabelValueMixin from "./_propsLabelValueMixin";
+import propsCandidateMixin from "./_propsCandidateMixin";
 
 export default class FieldEnumSelect extends React.Component{
 
     render(){
         const {
-            value,
-            onChange,
             candidate,
             valuefield,
             labelfield,
@@ -17,9 +18,7 @@ export default class FieldEnumSelect extends React.Component{
         } = this.props;
 
         return (
-            <Select 
-                value={value} 
-                onChange={onChange}
+            <Select
                 {...restProps}
             >
                 {candidate.map((item)=>{
@@ -36,13 +35,6 @@ export default class FieldEnumSelect extends React.Component{
     }
 }
 
-FieldEnumSelect.propTypes = {
-    value:PropTypes.any.isRequired,
-    onChange:PropTypes.func.isRequired,
-    candidate:PropTypes.array.isRequired,
-}
-
-FieldEnumSelect.defaultProps = {
-    valuefield:"value",
-    labelfield:"label",
-}
+propsModelMixin(FieldEnumSelect);
+propsLabelValueMixin(FieldEnumSelect);
+propsCandidateMixin(FieldEnumSelect);

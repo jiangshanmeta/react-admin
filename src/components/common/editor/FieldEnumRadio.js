@@ -1,17 +1,17 @@
 import React from 'react'
-import PropTypes from "prop-types";
 import {
     Radio
 } from "element-react";
 
+import propsModelMixin from "./_propsModelMixin"
+import propsLabelValueMixin from "./_propsLabelValueMixin";
+import propsCandidateMixin from "./_propsCandidateMixin";
 
 export default class FieldEnumRadio extends React.Component{
 
     render(){
 
         const {
-            value,
-            onChange,
             candidate,
             valuefield,
             labelfield,
@@ -20,8 +20,6 @@ export default class FieldEnumRadio extends React.Component{
         
         return (
             <Radio.Group
-                value={value}
-                onChange={onChange}
                 {...restProps}
             >
                 {candidate.map((item)=>{
@@ -40,13 +38,6 @@ export default class FieldEnumRadio extends React.Component{
 }
 
 
-FieldEnumRadio.propTypes = {
-    value:PropTypes.any.isRequired,
-    onChange:PropTypes.func.isRequired,
-    candidate:PropTypes.array.isRequired
-}
-
-FieldEnumRadio.defaultProps = {
-    valuefield:"value",
-    labelfield:"label",
-}
+propsModelMixin(FieldEnumRadio);
+propsLabelValueMixin(FieldEnumRadio);
+propsCandidateMixin(FieldEnumRadio);

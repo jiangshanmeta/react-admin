@@ -8,18 +8,21 @@ import FieldAsyncEnumRadio from "@/components/common/editor/FieldAsyncEnumRadio"
 import FieldAsyncEnumSelect from "@/components/common/editor/FieldAsyncEnumSelect"
 import FieldAsyncModel from "@/components/common/editor/FieldAsyncModel"
 
+const Components = {
+    FieldEnumRadio,
+    FieldEnumSelect,
+    FieldModel,
+    FieldAsyncEnumRadio,
+    FieldAsyncEnumSelect,
+    FieldAsyncModel,
+}
+
 
 const FieldEnumRadioCandidate = [
     {label:"item0",value:0},
     {label:"item1",value:1},
     {label:"item2",value:2},
 ]
-
-function aaa(){
-    console.log(123)
-    return FieldEnumRadioCandidate
-}
-
 
 const FieldEnumSelectCandidate = [
     {label:"itemA",value:0},
@@ -70,10 +73,31 @@ export default class Test_enum extends React.Component{
             this[`handle${field}Change`] = this.handleChange.bind(this,field);
         })
 
-        this.getAsyncEnumRadioCandidate = this.getAsyncCandidate.bind(null,FieldEnumRadioCandidate)
-        this.getAsyncEnumSelectCandidate = this.getAsyncCandidate.bind(null,FieldEnumSelectCandidate)
-        this.getAsyncModelCandidate = this.getAsyncCandidate.bind(null,FieldModelCandidate)
     
+        this.config = {
+            FieldEnumRadio:{
+                candidate:FieldEnumRadioCandidate,
+            },
+            FieldEnumSelect:{
+                candidate:FieldEnumSelectCandidate,
+            },
+            FieldModel:{
+                candidate:FieldModelCandidate,
+            },
+            FieldAsyncEnumRadio:{
+                getCandidate:this.getAsyncCandidate.bind(null,FieldEnumRadioCandidate),
+            },
+            FieldAsyncEnumSelect:{
+                getCandidate:this.getAsyncCandidate.bind(null,FieldEnumSelectCandidate),
+            },
+            FieldAsyncModel:{
+                getCandidate:this.getAsyncCandidate.bind(null,FieldModelCandidate)
+            },
+
+
+        }
+
+
     }
 
 
@@ -83,106 +107,30 @@ export default class Test_enum extends React.Component{
         })
     }
 
-    renderFieldEnumRadio(){
-        return (
-            <tr>
-                <td>FieldEnumRadio</td>
-                <td>{this.state.FieldEnumRadio}</td>
-                <td>
-                    <FieldEnumRadio
-                        value={this.state.FieldEnumRadio}
-                        onChange={this.handleFieldEnumRadioChange}
-                        candidate={FieldEnumRadioCandidate}
-                    ></FieldEnumRadio>
-                </td>
-            </tr>
-        )
-    }
 
-    renderFieldEnumSelect(){
+    renderField(Field){
+        const FieldComponent = Components[Field];
+
         return (
             <tr>
-                <td>FieldEnumSelect</td>
-                <td>{this.state.FieldEnumSelect}</td>
+                <td>{Field}</td>
+                <td>{this.state[Field]}</td>
                 <td>
-                    <FieldEnumSelect 
-                        value={this.state.FieldEnumSelect}
-                        onChange={this.handleFieldEnumSelectChange}
-                        candidate={FieldEnumSelectCandidate}
+                    <FieldComponent
+                        value={this.state[Field]}
+                        onChange={this[`handle${Field}Change`]}
+                        {...(this.config[Field] || {})}
                     />
                 </td>
             </tr>
         )
     }
 
-    renderFieldModel(){
-        return (
-            <tr>
-                <td>FieldModel</td>
-                <td>{this.state.FieldModel}</td>
-                <td>
-                    <FieldModel
-                        value={this.state.FieldModel}
-                        onChange={this.handleFieldModelChange}
-                        candidate={FieldModelCandidate}
-                    />
-                </td>
-            </tr>
-        )
-    }
 
     getAsyncCandidate(enums,cb){
         setTimeout(()=>{
             cb(enums);
         },1000);
-    }
-
-    renderFieldAsyncEnumRadio(){
-        return (
-            <tr>
-                <td>FieldAsyncEnumRadio</td>
-                <td>{this.state.FieldAsyncEnumRadio}</td>
-                <td>
-                    <FieldAsyncEnumRadio
-                        value={this.state.FieldAsyncEnumRadio}
-                        onChange={this.handleFieldAsyncEnumRadioChange}
-                        getCandidate={this.getAsyncEnumRadioCandidate}
-                    />
-                </td>
-            </tr>
-        )
-    }
-
-    renderFieldAsyncEnumSelect(){
-        return (
-            <tr>
-                <td>FieldAsyncEnumSelect</td>
-                <td>{this.state.FieldAsyncEnumSelect}</td>
-                <td>
-                    <FieldAsyncEnumSelect
-                        value={this.state.FieldAsyncEnumSelect}
-                        onChange={this.handleFieldAsyncEnumSelectChange}
-                        getCandidate={this.getAsyncEnumSelectCandidate}
-                    />
-                </td>
-            </tr>
-        );
-    }
-
-    renderFieldAsynModel(){
-        return (
-            <tr>
-                <td>FieldAsyncModel</td>
-                <td>{this.state.FieldAsyncModel}</td>
-                <td>
-                    <FieldAsyncModel
-                        value={this.state.FieldAsyncModel}
-                        onChange={this.handleFieldModelChange}
-                        getCandidate={this.getAsyncModelCandidate}
-                    />
-                </td>
-            </tr>
-        )
     }
 
     render(){
@@ -196,12 +144,12 @@ export default class Test_enum extends React.Component{
                     </tr>
                 </thead>
                 <tbody>
-                    {this.renderFieldEnumRadio()}
-                    {this.renderFieldEnumSelect()}
-                    {this.renderFieldModel()}
-                    {this.renderFieldAsyncEnumRadio()}
-                    {this.renderFieldAsyncEnumSelect()}
-                    {this.renderFieldAsynModel()}
+                    {this.renderField('FieldEnumRadio')}
+                    {this.renderField('FieldEnumSelect')}
+                    {this.renderField('FieldModel')}
+                    {this.renderField('FieldAsyncEnumRadio')}
+                    {this.renderField('FieldAsyncEnumSelect')}
+                    {this.renderField('FieldAsyncModel')}
                 </tbody>
             </table>
         );

@@ -15,6 +15,11 @@ export default{
             path:"/test/test_enum",
             label:"枚举editor",
             component:()=>import("@/pages/test/Test_enum"),
+        },
+        {
+            path:"/test/test_tag",
+            label:"tag editor",
+            component:()=>import("@/pages/test/Test_tag"),
         }
     ],
 
