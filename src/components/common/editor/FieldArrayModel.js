@@ -5,6 +5,9 @@ import {
 
 import SelectItems from "./_selectItems"
 
+import propsLabelValueMixin from "./_propsLabelValueMixin";
+import propsCandidateMixin from "./_propsCandidateMixin";
+
 
 export default class FieldArrayModel extends React.PureComponent{
     render(){
@@ -32,3 +35,6 @@ export default class FieldArrayModel extends React.PureComponent{
         )
     }
 }
+
+propsLabelValueMixin(FieldArrayModel);
+propsCandidateMixin(FieldArrayModel);

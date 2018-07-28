@@ -2,6 +2,18 @@ import React from "react";
 
 import FieldTag from "@/components/common/editor/FieldTag"
 import FieldArrayModel from "@/components/common/editor/FieldArrayModel"
+import FieldAsyncTag from "@/components/common/editor/FieldAsyncTag"
+import FieldAsyncArrayModel from "@/components/common/editor/FieldAsyncArrayModel"
+
+import TestTable from "./_testTable"
+
+const Components = {
+    FieldTag,
+    FieldArrayModel,
+    FieldAsyncTag,
+    FieldAsyncArrayModel,
+}
+
 
 const FieldTagCandidate = [
     {id:1,name:"zhangsan"},
@@ -28,17 +40,46 @@ export default class Test_tag extends React.Component{
         this.state = {
             FieldTag:[2],
             FieldArrayModel:[2],
+            FieldAsyncTag:[2],
+            FieldAsyncArrayModel:[2],
         };
 
         const fields = [
             "FieldTag",
             "FieldArrayModel",
+            "FieldAsyncTag",
+            "FieldAsyncArrayModel",
         ];
 
         fields.forEach((field)=>{
             this[`handle${field}Change`] = this.handleChange.bind(this,field);
         });
 
+
+        this.config = {
+            FieldTag:{
+                candidate:FieldTagCandidate,
+                labelfield:"name",
+                valuefield:"id",
+            },
+            FieldArrayModel:{
+                candidate:FieldArrayModelCandidate,
+                labelfield:"name",
+                valuefield:"id",
+            },
+            FieldAsyncTag:{
+                getCandidate:this.getAsyncCandidate.bind(null,FieldTagCandidate),
+                labelfield:"name",
+                valuefield:"id",
+            },
+            FieldAsyncArrayModel:{
+                getCandidate:this.getAsyncCandidate.bind(null,FieldArrayModelCandidate),
+                labelfield:"name",
+                valuefield:"id",
+            },
+        }
+    
+    
     }
 
     handleChange(field,value){
@@ -47,57 +88,41 @@ export default class Test_tag extends React.Component{
         })
     }
 
-    renderFieldTag(){
+    renderField(Field){
+        const FieldComponent = Components[Field];
+
         return (
             <tr>
-                <td>FieldTag</td>
-                <td>{this.state.FieldTag}</td>
+                <td>{Field}</td>
+                <td>{this.state[Field]}</td>
                 <td>
-                    <FieldTag
-                        value={this.state.FieldTag}
-                        onChange={this.handleFieldTagChange}
-                        candidate={FieldTagCandidate}
-                        labelfield='name'
-                        valuefield='id'
+                    <FieldComponent
+                        value={this.state[Field]}
+                        onChange={this[`handle${Field}Change`]}
+                        {...(this.config[Field] || {})}
                     />
                 </td>
             </tr>
         )
     }
 
-    renderFieldArrayModel(){
-        return (
-            <tr>
-                <td>FieldArrayModel</td>
-                <td>{this.state.FieldArrayModel}</td>
-                <td>
-                    <FieldArrayModel
-                        value={this.state.FieldArrayModel}
-                        onChange={this.handleFieldArrayModelChange}
-                        labelfield='name'
-                        valuefield='id'
-                        candidate={FieldArrayModelCandidate}
-                    />
-                </td>
-            </tr>
-        )
+
+    getAsyncCandidate(enums,cb){
+        setTimeout(()=>{
+            cb(enums);
+        },1000);
     }
 
     render(){
         return (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>组件名</th>
-                        <th>组件值</th>
-                        <th>组件实例</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.renderFieldTag()}
-                    {this.renderFieldArrayModel()}
-                </tbody>
-            </table>
+            <TestTable>
+                <React.Fragment>
+                    {this.renderField('FieldTag')}
+                    {this.renderField('FieldArrayModel')}
+                    {this.renderField('FieldAsyncTag')}
+                    {this.renderField('FieldAsyncArrayModel')}
+                </React.Fragment>
+            </TestTable>
         )
     }
 }

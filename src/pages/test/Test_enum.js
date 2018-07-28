@@ -8,6 +8,8 @@ import FieldAsyncEnumRadio from "@/components/common/editor/FieldAsyncEnumRadio"
 import FieldAsyncEnumSelect from "@/components/common/editor/FieldAsyncEnumSelect"
 import FieldAsyncModel from "@/components/common/editor/FieldAsyncModel"
 
+import TestTable from "./_testTable"
+
 const Components = {
     FieldEnumRadio,
     FieldEnumSelect,
@@ -135,23 +137,16 @@ export default class Test_enum extends React.Component{
 
     render(){
         return (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>组件名</th>
-                        <th>组件值</th>
-                        <th>组件实例</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <TestTable>
+                <React.Fragment>
                     {this.renderField('FieldEnumRadio')}
                     {this.renderField('FieldEnumSelect')}
                     {this.renderField('FieldModel')}
                     {this.renderField('FieldAsyncEnumRadio')}
                     {this.renderField('FieldAsyncEnumSelect')}
                     {this.renderField('FieldAsyncModel')}
-                </tbody>
-            </table>
+                </React.Fragment>
+            </TestTable>
         );
     }
 }
