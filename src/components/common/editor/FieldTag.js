@@ -3,6 +3,8 @@ import {
     Checkbox,
 } from "element-react";
 
+import CheckboxItems from "./_checkboxItems"
+
 import propsModelMixin from "./_propsModelMixin";
 import propsValueArrayMixin from "./_propsValueArrayMixin";
 import propsLabelValueMixin from "./_propsLabelValueMixin";
@@ -33,16 +35,7 @@ export default class FieldTag extends React.Component{
                 onChange={this.handleChange}
                 {...restProps}
             >
-                {candidate.map((item)=>{
-                    return (
-                        <Checkbox
-                            value={item[valuefield]}
-                            key={item[valuefield]}
-                        >
-                            {item[labelfield]}
-                        </Checkbox>
-                    )
-                })}
+                {CheckboxItems({candidate,valuefield,labelfield})}
             </Checkbox.Group>
         )
     }

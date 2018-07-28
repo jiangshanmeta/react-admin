@@ -3,14 +3,10 @@ import {
     Select
 } from "element-react";
 
-import propsModelMixin from "./_propsModelMixin";
-import propsLabelValueMixin from "./_propsLabelValueMixin";
-import propsCandidateMixin from "./_propsCandidateMixin";
-
 import SelectItems from "./_selectItems"
 
-export default class FieldEnumSelect extends React.Component{
 
+export default class FieldArrayModel extends React.PureComponent{
     render(){
         const {
             candidate,
@@ -19,20 +15,20 @@ export default class FieldEnumSelect extends React.Component{
             ...restProps,
         } = this.props;
 
+        delete restProps.filterable;
+
         return (
             <Select
+                filterable={true}
+                multiple={true}
                 {...restProps}
             >
                 <SelectItems
                     candidate={candidate}
                     valuefield={valuefield}
                     labelfield={labelfield}
-                />
+                ></SelectItems>
             </Select>
         )
     }
 }
-
-propsModelMixin(FieldEnumSelect);
-propsLabelValueMixin(FieldEnumSelect);
-propsCandidateMixin(FieldEnumSelect);

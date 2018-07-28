@@ -7,6 +7,8 @@ import propsModelMixin from "./_propsModelMixin"
 import propsLabelValueMixin from "./_propsLabelValueMixin";
 import propsCandidateMixin from "./_propsCandidateMixin";
 
+import SelectItems from "./_selectItems"
+
 export default class FieldModel extends React.Component{
 
     render(){
@@ -24,7 +26,13 @@ export default class FieldModel extends React.Component{
                 filterable={true}
                 {...restProps}
             >
-                {candidate.map((item)=>{
+                <SelectItems
+                    candidate={candidate}
+                    labelfield={labelfield}
+                    valuefield={valuefield}
+                />
+
+                {/* {candidate.map((item)=>{
                     return (
                         <Select.Option 
                             key={item[valuefield]}
@@ -32,7 +40,7 @@ export default class FieldModel extends React.Component{
                             label={item[labelfield]}
                         />
                     )
-                })}
+                })} */}
             </Select>
         )
     }
