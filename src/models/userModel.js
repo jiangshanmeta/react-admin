@@ -12,6 +12,14 @@ import {
     delUser,
 } from "@/server/user.js"
 
+import {
+    setReactComponentFlag
+} from "@/widget/injectComponents"
+
+import viewEnum from "@/components/common/views/viewEnum"
+
+setReactComponentFlag(viewEnum)
+
 export default{
     fieldList:{
         name:{
@@ -77,7 +85,7 @@ export default{
             },
             view:{
                 name:"view_enum2",
-                // component:()=>import("@/components/common/views/view_enum").then((rst)=>rst.default),
+                component:()=>import("@/components/common/views/viewEnum").then((rst)=>rst.default),
                 config:{
                     enums:genderEnum,
                 },
@@ -100,6 +108,7 @@ export default{
             },
             view:{
                 name:"view_enum",
+                component:viewEnum,
                 // component:()=>import("@/components/common/views/view_enum").then((rst)=>rst.default),
                 config:{
                     enums:typHash

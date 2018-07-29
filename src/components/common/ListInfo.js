@@ -10,21 +10,34 @@ import {
     identity,
 } from "@/widget/utility"
 
+import {
+    injectComponents
+} from "@/widget/injectComponents"
 
+
+function isViewComponent(fieldList,field){
+    return fieldList[field].view && fieldList[field].view.component;
+}
 
 export default class ListInfo extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            componentsInjected:false,
             data:[],
             formData:{},
             selectedData:[],
             fields:[],
+            total:0,
         };
+
+        this.viewComponents = {};
+        this.fieldViewComponentMap = {};
+
+        this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
     }
 
     getListInfo(){
-        
 
         return new Promise((resolve)=>{
             this.props.listRequest(resolve)
@@ -46,8 +59,48 @@ export default class ListInfo extends React.Component{
         }).catch(logError);
     }
 
+    get hasViewComponent(){
+        return Object.keys(this.props.fieldList).some(this.isViewComponent);
+    }
+
+    importViewComponent(){
+        if(this.hasViewComponent){
+            const fieldList = this.props.fieldList;
+            const fields = Object.keys(fieldList);
+            const hasViewComponentFields = fields.filter(this.isViewComponent);
+            const components = hasViewComponentFields.map((field)=>{
+                return {
+                    name:fieldList[field].view.name,
+                    component:fieldList[field].view.component,
+                }
+            })
+
+            new Promise((resolve)=>{
+                injectComponents(components,this.viewComponents,resolve)
+            }).then(()=>{
+
+                const fieldViewComponentMap = this.fieldViewComponentMap;
+                const viewComponents = this.viewComponents;
+
+                hasViewComponentFields.forEach((field)=>{
+                    fieldViewComponentMap[field] = viewComponents[fieldList[field].view.name]  
+                });
+
+                this.setState({
+                    componentsInjected:true,
+                })
+
+            }).catch(logError);
+
+            console.log(components)
+        }
+    }
+
     componentDidMount(){
         this.getListInfo();
+
+        this.importViewComponent();
+
     }
 
 
@@ -91,6 +144,11 @@ export default class ListInfo extends React.Component{
     }
 
     render(){
+        if(Object.keys(this.props.fieldList).length === 0 || (this.hasViewComponent && !this.state.componentsInjected) ){
+            return null;
+        }
+
+
         const beforeAfterFilterData = {
             data:this.state.data,
             formData:this.state.formData,

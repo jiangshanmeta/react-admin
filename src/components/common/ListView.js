@@ -3,19 +3,15 @@ import PropTypes from "prop-types";
 
 import ListInfo from "./ListInfo"
 
-// import SelectItems from "@/components/common/editor/_selectItems"
-
-// console.log(ListInfo,Object.keys(ListInfo))
-// console.log(ListInfo.prototype,Object.keys(ListInfo.prototype))
-// console.log(ListInfo.prototype.hasOwnProperty('render'))
-// console.log(SelectItems,Object.keys(SelectItems))
 
 export default class ListView extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-
+            
         }
+
+        
 
         this.renderStaticOperators = this.renderStaticOperators.bind(this);
     }
