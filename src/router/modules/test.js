@@ -20,7 +20,7 @@ export default{
             path:"/test/test_tag",
             label:"tag editor",
             component:()=>import("@/pages/test/Test_tag"),
-        }
+        },
     ],
 
 }
