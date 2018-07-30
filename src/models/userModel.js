@@ -35,8 +35,7 @@ export default{
                 default:'3',
             },
             view:{
-                function(data,config,record){
-                    // console.log(record);
+                handler(data,config,record){
                     return config.prefix + data;
                 },
                 config:{
@@ -84,7 +83,6 @@ export default{
                 default:0,
             },
             view:{
-                name:"view_enum2",
                 component:()=>import("@/components/common/views/viewEnum").then((rst)=>rst.default),
                 config:{
                     enums:genderEnum,
@@ -107,7 +105,6 @@ export default{
                 default:0,
             },
             view:{
-                name:"view_enum",
                 component:viewEnum,
                 // component:()=>import("@/components/common/views/view_enum").then((rst)=>rst.default),
                 config:{
@@ -147,7 +144,7 @@ export default{
                 default:"这是富文本编辑器蛤",
             },
             view:{
-                name:"view_html",
+
                 // component:()=>import("@/components/common/views/view_html").then((rst)=>rst.default),
             },
             colspan:{

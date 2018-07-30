@@ -20,7 +20,7 @@ const routes = menu.reduce((arr,{pages=[]})=>{
     return arr.concat(pages)
 },[]);
 
-console.log(routes)
+
 
 routes.push({
     component:page404

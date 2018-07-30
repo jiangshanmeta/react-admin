@@ -4,6 +4,8 @@ import {
     Table
 } from "element-react";
 
+import Views from "@/components/common/views/Views"
+
 
 import {
     logError,
@@ -15,8 +17,19 @@ import {
 } from "@/widget/injectComponents"
 
 
+
+
 function isViewComponent(fieldList,field){
     return fieldList[field].view && fieldList[field].view.component;
+}
+
+function tableColumnRender(fieldList,Components,data,{prop:field}){
+    return <Views 
+                data={data}
+                descriptor={fieldList[field].view}
+                field={field}
+                Component={Components[field]}
+            />
 }
 
 export default class ListInfo extends React.Component{
@@ -31,10 +44,13 @@ export default class ListInfo extends React.Component{
             total:0,
         };
 
-        this.viewComponents = {};
-        this.fieldViewComponentMap = {};
+        
 
         this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
+        
+        this.fieldTableColumnMap = {};
+
+
     }
 
     getListInfo(){
@@ -47,8 +63,9 @@ export default class ListInfo extends React.Component{
             if(!(promise instanceof Promise)){
                 promise = Promise.resolve(promise);
             }
-
+            console.log(fields)
             promise.then((data)=>{
+                
                 this.setState({
                     fields,
                     total,
@@ -63,42 +80,50 @@ export default class ListInfo extends React.Component{
         return Object.keys(this.props.fieldList).some(this.isViewComponent);
     }
 
-    importViewComponent(){
-        if(this.hasViewComponent){
-            const fieldList = this.props.fieldList;
-            const fields = Object.keys(fieldList);
-            const hasViewComponentFields = fields.filter(this.isViewComponent);
-            const components = hasViewComponentFields.map((field)=>{
-                return {
-                    name:fieldList[field].view.name,
-                    component:fieldList[field].view.component,
-                }
-            })
-
-            new Promise((resolve)=>{
-                injectComponents(components,this.viewComponents,resolve)
-            }).then(()=>{
-
-                const fieldViewComponentMap = this.fieldViewComponentMap;
-                const viewComponents = this.viewComponents;
-
-                hasViewComponentFields.forEach((field)=>{
-                    fieldViewComponentMap[field] = viewComponents[fieldList[field].view.name]  
-                });
-
-                this.setState({
-                    componentsInjected:true,
-                })
-
-            }).catch(logError);
-
-            console.log(components)
-        }
+    _setFieldTableColumnMap(fieldViewComponentMap){
+        const fieldList = this.props.fieldList;
+        const fieldRender = tableColumnRender.bind(null,fieldList,fieldViewComponentMap);
+        this.fieldTableColumnMap = Object.keys(fieldList).reduce((obj,field)=>{
+            obj[field] = Object.assign({
+                prop:field,
+                label:fieldList[field].label,
+                sortable:this.props.sortFields.includes(field),
+                render:fieldRender
+            },fieldList[field].tableColumnConfig || {});
+            return obj;
+        },{});
     }
+
+    importViewComponent(){
+        const fieldViewComponentMap = {};
+        
+        if(!this.hasViewComponent){
+            this._setFieldTableColumnMap(fieldViewComponentMap);
+            return;
+        }
+        const fieldList = this.props.fieldList;
+        const fields = Object.keys(fieldList);
+        const hasViewComponentFields = fields.filter(this.isViewComponent);
+        const components = hasViewComponentFields.map((field)=>{
+            return {
+                name:field,
+                component:fieldList[field].view.component,
+            }
+        })
+        
+        new Promise((resolve)=>{
+            injectComponents(components,fieldViewComponentMap,resolve)
+        }).then(()=>{
+            this._setFieldTableColumnMap(fieldViewComponentMap)
+            this.setState({
+                componentsInjected:true,
+            })
+        }).catch(logError);
+    }
+
 
     componentDidMount(){
         this.getListInfo();
-
         this.importViewComponent();
 
     }
@@ -109,15 +134,7 @@ export default class ListInfo extends React.Component{
             return null;
         }
 
-        const columns = this.state.fields.map((field)=>{
-            const descriptor = this.props.fieldList[field];
-            return Object.assign({},{
-                prop:field,
-                label:descriptor.label,
-                sortable:this.props.sortFields.includes(field),
-            },descriptor.tableColumnConfig || {});
-
-        });
+        const columns = this.state.fields.map((field)=>this.fieldTableColumnMap[field]);
 
         if(this.props.selection){
             columns.unshift({

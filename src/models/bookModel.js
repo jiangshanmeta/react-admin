@@ -24,7 +24,7 @@ export default{
             },
             view:{
                 join:['id'],
-                function(record){
+                handler(record){
                     return `${record.customername}(${record.id})`
                 },
             },
@@ -51,15 +51,15 @@ export default{
                 },
                 default:0,
             },
-            view:{
-                name:"view_transform",
-                // component:()=>import("@/components/common/views/view_transform").then((rst)=>rst.default),
-                config:{
-                    transform:function(data){
-                        return "¥" + data;
-                    },
-                }
-            },
+            // view:{
+            //     name:"view_transform",
+            //     // component:()=>import("@/components/common/views/view_transform").then((rst)=>rst.default),
+            //     config:{
+            //         transform:function(data){
+            //             return "¥" + data;
+            //         },
+            //     }
+            // },
         },
         address:{
             label:"收货地址",
@@ -103,7 +103,11 @@ export default{
                     customername:"name",
                     address:"position"
                 },
-                name:"test_view_join",
+                handler(info,config){
+                    return `${info.name} ${info.position}`
+                },
+
+                
                 // component:()=>import("@/components/book/views/test_view_join").then((rst)=>rst.default),
                 config:{
                     glue:" 的收货地址是 ",
