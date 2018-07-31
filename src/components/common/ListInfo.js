@@ -4,6 +4,8 @@ import {
     Table
 } from "element-react";
 
+import {observable,computed,reaction,transaction} from "mobx";
+
 import Views from "@/components/common/views/Views"
 
 
@@ -33,8 +35,33 @@ function tableColumnRender(fieldList,Components,data,{prop:field}){
 }
 
 export default class ListInfo extends React.Component{
+    @observable sortField = null;
+    @observable sortOrder = 'descending';
+    @observable pageIndex = 1;
+
+    @computed get defaultSort(){
+        return {
+            prop:this.sortField,
+            order:this.sortOrder,
+        }
+    }
+
     constructor(props){
         super(props);
+
+        if(props.defaultSort){
+            this.sortField = props.defaultSort.prop;
+            this.sortOrder = props.defaultSort.order;
+        }
+
+        reaction(()=>{
+            return {
+                sortField:this.sortField,
+                sortOrder:this.sortOrder,
+                pageIndex:this.pageIndex,
+            }
+        },()=>this.getListInfo());
+
         this.state = {
             componentsInjected:false,
             data:[],
@@ -44,26 +71,39 @@ export default class ListInfo extends React.Component{
             total:0,
         };
 
-        
-
         this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
         
         this.fieldTableColumnMap = {};
 
+        this.handleSortChange = this.handleSortChange.bind(this);
+    }
+
+    handleSortChange({prop,order}){
+
+        transaction(()=>{
+            this.sortField = prop;
+            this.sortOrder = order;
+            this.pageIndex = 1;
+        })
 
     }
 
     getListInfo(){
 
+
+        let params = {};
+        params[this.props.sortFieldReqName] = this.sortField;
+        params[this.props.sortOrderReqName] = this.sortOrder;
+
         return new Promise((resolve)=>{
-            this.props.listRequest(resolve)
+            this.props.listRequest(resolve,this.props.transformRequestData(params))
         }).then((rst)=>{
             let {data,total,fields} = rst;
             let promise = this.props.transformListData(data);
             if(!(promise instanceof Promise)){
                 promise = Promise.resolve(promise);
             }
-            console.log(fields)
+
             promise.then((data)=>{
                 
                 this.setState({
@@ -87,7 +127,7 @@ export default class ListInfo extends React.Component{
             obj[field] = Object.assign({
                 prop:field,
                 label:fieldList[field].label,
-                sortable:this.props.sortFields.includes(field),
+                sortable:this.props.sortFields.includes(field)?'custom':false,
                 render:fieldRender
             },fieldList[field].tableColumnConfig || {});
             return obj;
@@ -146,6 +186,8 @@ export default class ListInfo extends React.Component{
             <Table
                 columns={columns}
                 data={this.state.data}
+                onSortChange={this.handleSortChange}
+                defaultSort={this.defaultSort}
             />
         )
 
@@ -202,6 +244,9 @@ ListInfo.propTypes = {
     transformRequestData:PropTypes.func,
     transformListData:PropTypes.func,
     sortFields:PropTypes.array,
+    sortFieldReqName:PropTypes.string,
+    sortOrderReqName:PropTypes.string,
+    defaultSort:PropTypes.object,
 }
 
 function renderNull(info){
@@ -216,4 +261,7 @@ ListInfo.defaultProps = {
     transformRequestData:identity,
     transformListData:identity,
     sortFields:[],
+    sortFieldReqName:"sortField",
+    sortOrderReqName:"sortOrder",
+    defaultSort:null,
 }
