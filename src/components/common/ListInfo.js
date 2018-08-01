@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {
-    Table
+    Table,
+    Pagination,
 } from "element-react";
 
 import {observable,computed,reaction,transaction} from "mobx";
@@ -36,8 +37,9 @@ function tableColumnRender(fieldList,Components,data,{prop:field}){
 
 export default class ListInfo extends React.Component{
     @observable sortField = null;
-    @observable sortOrder = 'descending';
+    @observable sortOrder = null;
     @observable pageIndex = 1;
+    @observable pageSize = 20;
 
     @computed get defaultSort(){
         return {
@@ -54,13 +56,21 @@ export default class ListInfo extends React.Component{
             this.sortOrder = props.defaultSort.order;
         }
 
+        this.pageSize = props.pageSize;
+
+        this.getListInfo = this.getListInfo.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
+        this.handleCurrentChange = this.handleCurrentChange.bind(this);
+        this.handleSizeChange = this.handleSizeChange.bind(this);
+
         reaction(()=>{
             return {
                 sortField:this.sortField,
                 sortOrder:this.sortOrder,
                 pageIndex:this.pageIndex,
+                pageSize:this.pageSize,
             }
-        },()=>this.getListInfo());
+        },this.getListInfo);
 
         this.state = {
             componentsInjected:false,
@@ -75,7 +85,7 @@ export default class ListInfo extends React.Component{
         
         this.fieldTableColumnMap = {};
 
-        this.handleSortChange = this.handleSortChange.bind(this);
+        
     }
 
     handleSortChange({prop,order}){
@@ -94,6 +104,12 @@ export default class ListInfo extends React.Component{
         let params = {};
         params[this.props.sortFieldReqName] = this.sortField;
         params[this.props.sortOrderReqName] = this.sortOrder;
+        if(this.props.paginated){
+            params[this.props.pageSizeReqName] = this.pageSize;
+            params[this.props.pageIndexReqName] = this.pageIndex;
+        }
+
+        console.log(params);
 
         return new Promise((resolve)=>{
             this.props.listRequest(resolve,this.props.transformRequestData(params))
@@ -188,6 +204,7 @@ export default class ListInfo extends React.Component{
                 data={this.state.data}
                 onSortChange={this.handleSortChange}
                 defaultSort={this.defaultSort}
+                {...this.props.tableConfig}
             />
         )
 
@@ -198,8 +215,30 @@ export default class ListInfo extends React.Component{
         return null;
     }
 
+    handleCurrentChange(pageIndex){
+        this.pageIndex = pageIndex;
+    }
+
+    handleSizeChange(pageSize){
+        this.pageSize = pageSize;
+    }
+
     renderPagination(){
-        return null;
+        if(!this.props.paginated || this.state.data.length === 0){
+            return null;
+        }
+
+        return (
+            <Pagination
+                currentPage={this.pageIndex}
+                pageSize={this.pageSize}
+                total={this.state.total}
+                onCurrentChange={this.handleCurrentChange}
+                onSizeChange={this.handleSizeChange}
+                {...this.props.paginationConfig}
+            />
+        )
+        
     }
 
     render(){
@@ -239,14 +278,26 @@ ListInfo.propTypes = {
     beforeFilters:PropTypes.func,
     afterFilters:PropTypes.func,
 
-    selection:PropTypes.bool,
-    listRequest:PropTypes.func.isRequired,
-    transformRequestData:PropTypes.func,
-    transformListData:PropTypes.func,
-    sortFields:PropTypes.array,
+    // data
+    defaultSort:PropTypes.object,
     sortFieldReqName:PropTypes.string,
     sortOrderReqName:PropTypes.string,
-    defaultSort:PropTypes.object,
+    pageSize:PropTypes.number,
+    pageSizeReqName:PropTypes.string,
+    pageIndexReqName:PropTypes.string,
+    transformRequestData:PropTypes.func,
+    listRequest:PropTypes.func.isRequired,
+    transformListData:PropTypes.func,
+
+    // table
+    tableConfig:PropTypes.object,
+    selection:PropTypes.bool,
+    sortFields:PropTypes.array,
+    
+    // pagination
+    paginated:PropTypes.bool,
+    paginationConfig:PropTypes.object,
+
 }
 
 function renderNull(info){
@@ -257,11 +308,24 @@ ListInfo.defaultProps = {
     beforeFilters:renderNull,
     afterFilters:renderNull,
 
-    selection:false,
-    transformRequestData:identity,
-    transformListData:identity,
-    sortFields:[],
+    // data
+    defaultSort:null,
     sortFieldReqName:"sortField",
     sortOrderReqName:"sortOrder",
-    defaultSort:null,
+    pageSize:20,
+    pageSizeReqName:"pageSize",
+    pageIndexReqName:"pageIndex",
+    transformRequestData:identity,
+    transformListData:identity,
+
+
+    // table
+    tableConfig:{},
+    selection:false,
+    sortFields:[],
+
+    // pagination
+    paginated:true,
+    paginationConfig:{},
+
 }
