@@ -84,23 +84,17 @@ export default class ListInfo extends React.Component{
         this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
         
         this.fieldTableColumnMap = {};
-
-        
     }
 
     handleSortChange({prop,order}){
-
         transaction(()=>{
             this.sortField = prop;
             this.sortOrder = order;
             this.pageIndex = 1;
         })
-
     }
 
     getListInfo(){
-
-
         let params = {};
         params[this.props.sortFieldReqName] = this.sortField;
         params[this.props.sortOrderReqName] = this.sortOrder;
@@ -212,7 +206,13 @@ export default class ListInfo extends React.Component{
     }
 
     renderEmptyDataTip(){
-        return null;
+        if(this.state.data.length){
+            return null;
+        }
+        return (
+            <section>{this.props.emptyText}</section>
+        )
+        
     }
 
     handleCurrentChange(pageIndex){
@@ -246,7 +246,6 @@ export default class ListInfo extends React.Component{
             return null;
         }
 
-
         const beforeAfterFilterData = {
             data:this.state.data,
             formData:this.state.formData,
@@ -256,19 +255,14 @@ export default class ListInfo extends React.Component{
         return (
             <section>
                 {this.props.beforeFilters(beforeAfterFilterData)}
-
                 <div>
                     filter todo
                 </div>
 
                 {this.props.afterFilters(beforeAfterFilterData)}
-
-
                 {this.renderTable()}
                 {this.renderEmptyDataTip()}
                 {this.renderPagination()}
-                
-
             </section>
         )
     }
@@ -293,6 +287,8 @@ ListInfo.propTypes = {
     tableConfig:PropTypes.object,
     selection:PropTypes.bool,
     sortFields:PropTypes.array,
+
+    emptyText:PropTypes.string,
     
     // pagination
     paginated:PropTypes.bool,
@@ -323,6 +319,8 @@ ListInfo.defaultProps = {
     tableConfig:{},
     selection:false,
     sortFields:[],
+
+    emptyText:"暂无数据",
 
     // pagination
     paginated:true,
