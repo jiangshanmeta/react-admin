@@ -187,62 +187,62 @@ export default{
             label:"姓名",
             field:"username",
             editorComponent:{
-                name:"field_string",
+                name:"FieldString",
                 config:{
                     placeholder:"请输入用户姓名",
                 },
                 default:"",
             },
         },
-        {
-            label:"类型",
-            field:"typ",
-            editorComponent:{
-                name:"filter_enum",
-                config:{
-                    candidate:typEnum,
-                    allvalue:-1,
-                    alllabel:"全部",
-                },
-                default:-1,
-            },
-        },
-        {
-            label:"权限",
-            field:"privilege",
-            editorComponent:{
-                name:"filter_relates_enum",
-                config:{
-                    httpRequest:getPrivilege,
-                    valuefield:"id",
-                    labelfield:"name",
-                    placeholder:"请选择权限",
-                    allvalue:"all",
-                    alllabel:"不限",
-                    relates:[
-                        {
-                            invalidValue:-1,
-                            relateField:'typ',
-                            requestField:'req_typ',
-                        }
-                    ],
-                    handleInvalidRelateIds(){
-                        this.$emit("input","all");
-                    },
+        // {
+        //     label:"类型",
+        //     field:"typ",
+        //     editorComponent:{
+        //         name:"filter_enum",
+        //         config:{
+        //             candidate:typEnum,
+        //             allvalue:-1,
+        //             alllabel:"全部",
+        //         },
+        //         default:-1,
+        //     },
+        // },
+        // {
+        //     label:"权限",
+        //     field:"privilege",
+        //     editorComponent:{
+        //         name:"filter_relates_enum",
+        //         config:{
+        //             httpRequest:getPrivilege,
+        //             valuefield:"id",
+        //             labelfield:"name",
+        //             placeholder:"请选择权限",
+        //             allvalue:"all",
+        //             alllabel:"不限",
+        //             relates:[
+        //                 {
+        //                     invalidValue:-1,
+        //                     relateField:'typ',
+        //                     requestField:'req_typ',
+        //                 }
+        //             ],
+        //             handleInvalidRelateIds(){
+        //                 this.$emit("input","all");
+        //             },
 
-                },
-                default:"all",
-            },
-        },
+        //         },
+        //         default:"all",
+        //     },
+        // },
         {
             label:"自定义filter",
             field:"test",
             editorComponent:{
-                name:"test_custom_filter",
+                name:"TestCustomFilter",
                 config:{
                     msg:"测试自定义filter",
                 },
-                // component:()=>import("@/components/user/test_custom_filter").then((rst)=>rst.default),
+                component:()=>import("@/components/user/editor/TestCustomFilter").then((rst)=>rst.default),
                 default:"test",
             },
             watch:true,

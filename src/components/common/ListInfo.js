@@ -19,6 +19,8 @@ import {
     injectComponents
 } from "@/widget/injectComponents"
 
+import Filters from "@/components/common/editor/Filters"
+
 
 
 
@@ -81,9 +83,19 @@ export default class ListInfo extends React.Component{
             total:0,
         };
 
+        this.$refs = {
+            
+        };
+
+        this._setFiltersRef = this._setRef.bind(this,'filters');
+
         this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
         
         this.fieldTableColumnMap = {};
+    }
+
+    _setRef(refName,refValue){
+        this.$refs[refName] = refValue;
     }
 
     handleSortChange({prop,order}){
@@ -95,7 +107,17 @@ export default class ListInfo extends React.Component{
     }
 
     getListInfo(){
+        if(this.props.filters.length && !this.$refs.filters){
+            setTimeout(this.getListInfo,0);
+            return;
+        }
+
         let params = {};
+
+        if(this.props.filters.length){
+            params = Object.assign(params,this.$refs.filters.formData);
+        }
+
         params[this.props.sortFieldReqName] = this.sortField;
         params[this.props.sortOrderReqName] = this.sortOrder;
         if(this.props.paginated){
@@ -255,10 +277,12 @@ export default class ListInfo extends React.Component{
         return (
             <section>
                 {this.props.beforeFilters(beforeAfterFilterData)}
-                <div>
-                    filter todo
-                </div>
-
+                <Filters
+                    ref={this._setFiltersRef}
+                    fieldList={this.props.fieldList}
+                    filters={this.props.filters}
+                    filterOperators={this.props.filterOperators}
+                />
                 {this.props.afterFilters(beforeAfterFilterData)}
                 {this.renderTable()}
                 {this.renderEmptyDataTip()}
@@ -269,7 +293,11 @@ export default class ListInfo extends React.Component{
 }
 
 ListInfo.propTypes = {
+    fieldList:PropTypes.object.isRequired,
+
     beforeFilters:PropTypes.func,
+    filters:PropTypes.array,
+    filterOperators:PropTypes.array,
     afterFilters:PropTypes.func,
 
     // data
@@ -302,6 +330,8 @@ function renderNull(info){
 
 ListInfo.defaultProps = {
     beforeFilters:renderNull,
+    filters:[],
+    filterOperators:[],
     afterFilters:renderNull,
 
     // data
