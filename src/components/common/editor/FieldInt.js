@@ -6,12 +6,7 @@ import {
 
 
 export default class FieldInt extends React.Component{
-    constructor(props){
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(value){
+    handleChange = (value)=>{
         if(value === ""){
             value = 0;
         }

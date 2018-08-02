@@ -60,11 +60,6 @@ export default class ListInfo extends React.Component{
 
         this.pageSize = props.pageSize;
 
-        this.getListInfo = this.getListInfo.bind(this);
-        this.handleSortChange = this.handleSortChange.bind(this);
-        this.handleCurrentChange = this.handleCurrentChange.bind(this);
-        this.handleSizeChange = this.handleSizeChange.bind(this);
-
         reaction(()=>{
             return {
                 sortField:this.sortField,
@@ -83,22 +78,21 @@ export default class ListInfo extends React.Component{
             total:0,
         };
 
-        this.$refs = {
-            
-        };
-
+        this.$refs = {};
         this._setFiltersRef = this._setRef.bind(this,'filters');
 
-        this.isViewComponent = isViewComponent.bind(null,this.props.fieldList);
-        
-        this.fieldTableColumnMap = {};
+        this._fieldTableColumnMap = {};
+        this.__isViewComponent = isViewComponent.bind(null,props.fieldList);
+        this._hasViewComponent = Object.keys(props.fieldList).some(this.__isViewComponent);
+        this._importViewComponent();
+        this.getListInfo();
     }
 
     _setRef(refName,refValue){
         this.$refs[refName] = refValue;
     }
 
-    handleSortChange({prop,order}){
+    _handleSortChange = ({prop,order})=>{
         transaction(()=>{
             this.sortField = prop;
             this.sortOrder = order;
@@ -106,7 +100,7 @@ export default class ListInfo extends React.Component{
         })
     }
 
-    getListInfo(){
+    getListInfo = ()=>{
         if(this.props.filters.length && !this.$refs.filters){
             setTimeout(this.getListInfo,0);
             return;
@@ -148,14 +142,12 @@ export default class ListInfo extends React.Component{
         }).catch(logError);
     }
 
-    get hasViewComponent(){
-        return Object.keys(this.props.fieldList).some(this.isViewComponent);
-    }
+
 
     _setFieldTableColumnMap(fieldViewComponentMap){
         const fieldList = this.props.fieldList;
         const fieldRender = tableColumnRender.bind(null,fieldList,fieldViewComponentMap);
-        this.fieldTableColumnMap = Object.keys(fieldList).reduce((obj,field)=>{
+        this._fieldTableColumnMap = Object.keys(fieldList).reduce((obj,field)=>{
             obj[field] = Object.assign({
                 prop:field,
                 label:fieldList[field].label,
@@ -166,16 +158,16 @@ export default class ListInfo extends React.Component{
         },{});
     }
 
-    importViewComponent(){
+    _importViewComponent(){
         const fieldViewComponentMap = {};
         
-        if(!this.hasViewComponent){
+        if(!this._hasViewComponent){
             this._setFieldTableColumnMap(fieldViewComponentMap);
             return;
         }
         const fieldList = this.props.fieldList;
         const fields = Object.keys(fieldList);
-        const hasViewComponentFields = fields.filter(this.isViewComponent);
+        const hasViewComponentFields = fields.filter(this.__isViewComponent);
         const components = hasViewComponentFields.map((field)=>{
             return {
                 name:field,
@@ -194,19 +186,12 @@ export default class ListInfo extends React.Component{
     }
 
 
-    componentDidMount(){
-        this.getListInfo();
-        this.importViewComponent();
-
-    }
-
-
-    renderTable(){
+    _renderTable(){
         if(this.state.data.length === 0 || this.state.fields.length === 0){
             return null;
         }
 
-        const columns = this.state.fields.map((field)=>this.fieldTableColumnMap[field]);
+        const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
 
         if(this.props.selection){
             columns.unshift({
@@ -218,34 +203,31 @@ export default class ListInfo extends React.Component{
             <Table
                 columns={columns}
                 data={this.state.data}
-                onSortChange={this.handleSortChange}
+                onSortChange={this._handleSortChange}
                 defaultSort={this.defaultSort}
                 {...this.props.tableConfig}
             />
         )
-
-        
     }
 
-    renderEmptyDataTip(){
+    _renderEmptyDataTip(){
         if(this.state.data.length){
             return null;
         }
         return (
             <section>{this.props.emptyText}</section>
         )
-        
     }
 
-    handleCurrentChange(pageIndex){
+    _handleCurrentChange = (pageIndex)=>{
         this.pageIndex = pageIndex;
     }
 
-    handleSizeChange(pageSize){
+    _handleSizeChange = (pageSize)=>{
         this.pageSize = pageSize;
     }
 
-    renderPagination(){
+    _renderPagination(){
         if(!this.props.paginated || this.state.data.length === 0){
             return null;
         }
@@ -255,8 +237,8 @@ export default class ListInfo extends React.Component{
                 currentPage={this.pageIndex}
                 pageSize={this.pageSize}
                 total={this.state.total}
-                onCurrentChange={this.handleCurrentChange}
-                onSizeChange={this.handleSizeChange}
+                onCurrentChange={this._handleCurrentChange}
+                onSizeChange={this._handleSizeChange}
                 {...this.props.paginationConfig}
             />
         )
@@ -284,9 +266,9 @@ export default class ListInfo extends React.Component{
                     filterOperators={this.props.filterOperators}
                 />
                 {this.props.afterFilters(beforeAfterFilterData)}
-                {this.renderTable()}
-                {this.renderEmptyDataTip()}
-                {this.renderPagination()}
+                {this._renderTable()}
+                {this._renderEmptyDataTip()}
+                {this._renderPagination()}
             </section>
         )
     }

@@ -7,12 +7,7 @@ import {
 import menu from "@/router/menu"
 
 export default class AppMenu extends React.Component{
-    constructor(props){
-        super(props);
-        this.handleSelect = this.handleSelect.bind(this);
-    }
-
-    handleSelect(pathname){
+    handleSelect = (pathname)=>{
         this.props.history.push({
             pathname,
         })

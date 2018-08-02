@@ -11,12 +11,7 @@ import propsLabelValueMixin from "./_propsLabelValueMixin";
 import propsCandidateMixin from "./_propsCandidateMixin";
 
 export default class FieldTag extends React.Component{
-    constructor(){
-        super();
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(value){
+    handleChange = (value)=>{
         this.props.onChange(value.slice());
     }
 

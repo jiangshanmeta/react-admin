@@ -12,12 +12,10 @@ export default class ListView extends React.Component{
         }
 
         
-
-        this.renderStaticOperators = this.renderStaticOperators.bind(this);
     }
 
 
-    renderStaticOperators(info){
+    renderStaticOperators = (info)=>{
         return (
             <div>
                 static Operators
