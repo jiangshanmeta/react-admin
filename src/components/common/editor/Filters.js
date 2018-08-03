@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-    Form
+    Form,
+    Button,
 } from "element-react";
 
 import {
@@ -107,7 +108,7 @@ export default class Filters extends React.Component{
     }
 
     render(){
-        if(this._hasInjectFilterComponent && !this.state.componentsInjected){
+        if(!this.props.filters.length || (this._hasInjectFilterComponent && !this.state.componentsInjected) ){
             return null;
         }
 
@@ -127,6 +128,17 @@ export default class Filters extends React.Component{
                     )
 
                 })}
+
+                <Form.Item>
+                    <section>
+                        <Button
+                            type="primary"
+                            onClick={this.search}
+                        >
+                            查询
+                        </Button>
+                    </section>
+                </Form.Item>
             </Form>
         )
     }
