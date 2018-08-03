@@ -5,6 +5,15 @@ import {
 } from "element-react";
 
 import {
+    observable,
+    reaction,
+} from "mobx";
+
+import {
+    observer
+} from "mobx-react"
+
+import {
     injectComponents
 } from "@/widget/injectComponents"
 
@@ -13,27 +22,30 @@ import {
 } from "@/widget/utility"
 
 import FieldString from "./FieldString"
+import FieldNumber from "./FieldNumber"
 import FieldEnumSelect from "./FieldEnumSelect"
-
 
 const defaultFilterComponents = {
     FieldString,
+    FieldNumber,
     FieldEnumSelect,
 };
 
 
-
+@observer
 export default class Filters extends React.Component{
+    @observable _formData = {};
     constructor(props){
         super(props);
         this.state = {
             componentsInjected:false,
-            formData:props.filters.reduce((obj,{field,editorComponent})=>{
-                const defaultConfig = editorComponent.default;
-                obj[field] = typeof defaultConfig === 'function'?defaultConfig.call(this):defaultConfig;
-                return obj;
-            },{}),
         };
+
+        this._formData = props.filters.reduce((obj,{field,editorComponent})=>{
+            const defaultConfig = editorComponent.default;
+            obj[field] = typeof defaultConfig === 'function'?defaultConfig.call(this):defaultConfig;
+            return obj;
+        },{});
 
         this._changeHandlerMap = props.filters.reduce((obj,{field})=>{
             obj[field] = this._handleFieldChange.bind(this,field)
@@ -44,12 +56,23 @@ export default class Filters extends React.Component{
             return item.editorComponent.component;
         });
 
+        const watchFilters = props.filters.filter(item=>item.watch);
+        if(watchFilters.length){
+            reaction(()=>{
+                return watchFilters.map(item=>this._formData[item.field]);
+            },this.search);
+        }
+
         this.filterComponents = Object.assign({},defaultFilterComponents);
         this._importFilterComponents();
     }
+
+    search = ()=>{
+        this.props.onSearch && this.props.onSearch();
+    }
     
     get formData(){
-        return JSON.parse(JSON.stringify(this.state.formData));
+        return JSON.parse(JSON.stringify(this._formData));
     }
 
 
@@ -80,9 +103,7 @@ export default class Filters extends React.Component{
     }
 
     _handleFieldChange(field,value){
-        this.setState({
-            formData:Object.assign({},this.state.formData,{[field]:value}),
-        });
+        this._formData[field] = value;
     }
 
     render(){
@@ -98,7 +119,7 @@ export default class Filters extends React.Component{
                     return (
                         <Form.Item key={item.field} label={item.label}>
                             <Component
-                                value={this.state.formData[item.field]}
+                                value={this._formData[item.field]}
                                 onChange={this._changeHandlerMap[item.field]}
                                 {...(editorComponent.config || {})}
                             />
@@ -116,6 +137,7 @@ Filters.propTypes = {
     fieldList:PropTypes.object.isRequired,
     filters:PropTypes.array,
     filterOperators:PropTypes.array,
+    onSearch:PropTypes.func,
 }
 
 Filters.defaultProps = {

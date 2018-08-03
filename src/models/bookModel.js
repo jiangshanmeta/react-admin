@@ -197,7 +197,7 @@ export default{
             label:"客户名",
             field:"customername",
             editorComponent:{
-                name:"field_string",
+                name:"FieldString",
                 config:{
                     placeholder:"请输入客户名"
                 },
@@ -208,7 +208,7 @@ export default{
             label:"金额",
             field:"totalprice",
             editorComponent:{
-                name:"field_number",
+                name:"FieldNumber",
                 default:500,
             }
         },

@@ -264,6 +264,7 @@ export default class ListInfo extends React.Component{
                     fieldList={this.props.fieldList}
                     filters={this.props.filters}
                     filterOperators={this.props.filterOperators}
+                    onSearch={this.getListInfo}
                 />
                 {this.props.afterFilters(beforeAfterFilterData)}
                 {this._renderTable()}
