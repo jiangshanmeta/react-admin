@@ -241,6 +241,16 @@ export default{
                 name:"TestCustomFilter",
                 config:{
                     msg:"测试自定义filter",
+                    relates:[
+                        {
+                            relateField:"username",
+                            handler(newVal){
+                                if(newVal === 'lelouch'){
+                                    this.props.onChange("naive")
+                                }
+                            }
+                        },
+                    ],
                 },
                 component:()=>import("@/components/user/editor/TestCustomFilter").then((rst)=>rst.default),
                 default:"test",
