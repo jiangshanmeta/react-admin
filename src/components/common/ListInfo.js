@@ -5,7 +5,7 @@ import {
     Pagination,
 } from "element-react";
 
-import {observable,computed,reaction,transaction} from "mobx";
+import {observable,computed,reaction,action} from "mobx";
 
 import Views from "@/components/common/views/Views"
 
@@ -92,12 +92,11 @@ export default class ListInfo extends React.Component{
         this.$refs[refName] = refValue;
     }
 
+    @action
     _handleSortChange = ({prop,order})=>{
-        transaction(()=>{
-            this.sortField = prop;
-            this.sortOrder = order;
-            this.pageIndex = 1;
-        })
+        this.sortField = prop;
+        this.sortOrder = order;
+        this.pageIndex = 1;
     }
 
     getListInfo = ()=>{
