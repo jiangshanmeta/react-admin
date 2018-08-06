@@ -6,6 +6,10 @@ import {
     getBookList,
 } from "@/server/book.js"
 
+import {
+    Message
+} from "element-react"
+
 // import {download} from "@/widget/utility.js"
 
 export default{
@@ -215,8 +219,8 @@ export default{
     ],
     operators:[
         {
-            handler(data,index,resolve){
-                this.$message({
+            handler(resolve,data){
+                Message({
                     message:`${data.customername}再来一单`,
                     type:"success",
                     duration:2000

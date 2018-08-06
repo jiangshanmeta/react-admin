@@ -8,6 +8,7 @@ import {
 import {observable,computed,reaction,action} from "mobx";
 
 import Views from "@/components/common/views/Views"
+import Operators from "@/components/common/operators/Operators"
 
 
 import {
@@ -21,20 +22,8 @@ import {
 
 import Filters from "@/components/common/editor/Filters"
 
-
-
-
 function isViewComponent(fieldList,field){
     return fieldList[field].view && fieldList[field].view.component;
-}
-
-function tableColumnRender(fieldList,Components,data,{prop:field}){
-    return <Views 
-                data={data}
-                descriptor={fieldList[field].view}
-                field={field}
-                Component={Components[field]}
-            />
 }
 
 export default class ListInfo extends React.Component{
@@ -83,7 +72,10 @@ export default class ListInfo extends React.Component{
 
         this._fieldTableColumnMap = {};
         this.__isViewComponent = isViewComponent.bind(null,props.fieldList);
-        this._hasViewComponent = Object.keys(props.fieldList).some(this.__isViewComponent);
+        this.__hasViewComponent = Object.keys(props.fieldList).some(this.__isViewComponent);
+        
+
+        this._cacheColumns = null;
         this._importViewComponent();
         this.getListInfo();
     }
@@ -98,6 +90,17 @@ export default class ListInfo extends React.Component{
         this.sortOrder = order;
         this.pageIndex = 1;
     }
+
+    @action
+    _handleCurrentChange = (pageIndex)=>{
+        this.pageIndex = pageIndex;
+    }
+
+    @action
+    _handleSizeChange = (pageSize)=>{
+        this.pageSize = pageSize;
+    }
+
 
     getListInfo = ()=>{
         if(this.props.filters.length && !this.$refs.filters){
@@ -130,7 +133,6 @@ export default class ListInfo extends React.Component{
             }
 
             promise.then((data)=>{
-                
                 this.setState({
                     fields,
                     total,
@@ -141,17 +143,24 @@ export default class ListInfo extends React.Component{
         }).catch(logError);
     }
 
-
-
     _setFieldTableColumnMap(fieldViewComponentMap){
         const fieldList = this.props.fieldList;
-        const fieldRender = tableColumnRender.bind(null,fieldList,fieldViewComponentMap);
+
         this._fieldTableColumnMap = Object.keys(fieldList).reduce((obj,field)=>{
             obj[field] = Object.assign({
                 prop:field,
                 label:fieldList[field].label,
                 sortable:this.props.sortFields.includes(field)?'custom':false,
-                render:fieldRender
+                render:(data)=>{
+                    return (
+                        <Views
+                            data={data}
+                            descriptor={fieldList[field].view}
+                            field={field}
+                            Component={fieldViewComponentMap[field]}
+                        />
+                    )
+                }
             },fieldList[field].tableColumnConfig || {});
             return obj;
         },{});
@@ -160,7 +169,7 @@ export default class ListInfo extends React.Component{
     _importViewComponent(){
         const fieldViewComponentMap = {};
         
-        if(!this._hasViewComponent){
+        if(!this.__hasViewComponent){
             this._setFieldTableColumnMap(fieldViewComponentMap);
             return;
         }
@@ -190,17 +199,36 @@ export default class ListInfo extends React.Component{
             return null;
         }
 
-        const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
+        if(!this._cacheColumns){
+            const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
 
-        if(this.props.selection){
-            columns.unshift({
-                type:'selection',
-            });
+            if(this.props.selection){
+                columns.unshift({
+                    type:'selection',
+                });
+            }
+
+            if(this.props.operators.length){
+                columns.push({
+                    label:this.props.operatorsLabel,
+                    render:(data)=>{
+                        return (
+                            <Operators
+                                data={data}
+                                fieldList={this.props.fieldList}
+                                operators={this.props.operators}
+                                onUpdate={this.getListInfo}
+                            />
+                        )
+                    },
+                });
+            }
+            this._cacheColumns = columns;
         }
 
         return (
             <Table
-                columns={columns}
+                columns={this._cacheColumns}
                 data={this.state.data}
                 onSortChange={this._handleSortChange}
                 defaultSort={this.defaultSort}
@@ -218,14 +246,6 @@ export default class ListInfo extends React.Component{
         )
     }
 
-    _handleCurrentChange = (pageIndex)=>{
-        this.pageIndex = pageIndex;
-    }
-
-    _handleSizeChange = (pageSize)=>{
-        this.pageSize = pageSize;
-    }
-
     _renderPagination(){
         if(!this.props.paginated || this.state.data.length === 0){
             return null;
@@ -241,7 +261,6 @@ export default class ListInfo extends React.Component{
                 {...this.props.paginationConfig}
             />
         )
-        
     }
 
     render(){
@@ -298,12 +317,14 @@ ListInfo.propTypes = {
     selection:PropTypes.bool,
     sortFields:PropTypes.array,
 
+    operators:PropTypes.array,
+    operatorsLabel:PropTypes.string,
+
     emptyText:PropTypes.string,
     
     // pagination
     paginated:PropTypes.bool,
     paginationConfig:PropTypes.object,
-
 }
 
 function renderNull(info){
@@ -332,10 +353,12 @@ ListInfo.defaultProps = {
     selection:false,
     sortFields:[],
 
+    operators:[],
+    operatorsLabel:"操作",
+
     emptyText:"暂无数据",
 
     // pagination
     paginated:true,
     paginationConfig:{},
-
 }

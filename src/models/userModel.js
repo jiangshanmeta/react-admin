@@ -18,6 +18,10 @@ import {
 
 import viewEnum from "@/components/common/views/viewEnum"
 
+import {
+    Message
+} from "element-react"
+
 setReactComponentFlag(viewEnum)
 
 export default{
@@ -319,11 +323,12 @@ export default{
         },
         {
             handler(resolve,data){
-                this.$message({
+                Message({
                     message:`${data.name}不要总想着搞个大新闻`,
                     type:"success",
                     duration:2000,
-                });
+                })
+
                 setTimeout(()=>{
                     resolve();
                 },1000)

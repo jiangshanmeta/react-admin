@@ -34,6 +34,7 @@ export default class ListView extends React.Component{
                     fieldList={this.props.fieldList}
                     filters={this.props.filters}
                     filterOperators={this.props.filterOperators}
+                    operators={this.props.operators}
                     {...this.props.listConfig}
                 ></ListInfo>
 
