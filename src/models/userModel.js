@@ -275,7 +275,7 @@ export default{
             layout:"total, sizes, prev, pager, next, jumper",
             pageSizes:[2,10,20,50],
         },
-
+        selection:true,
 
         pageSizes:[10,20,30,50],
     },

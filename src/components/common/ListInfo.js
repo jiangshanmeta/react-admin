@@ -39,6 +39,10 @@ export default class ListInfo extends React.Component{
         }
     }
 
+    get _formData(){
+        return this.$refs.filters && this.$refs.filters.formData;
+    }
+
     constructor(props){
         super(props);
 
@@ -61,11 +65,10 @@ export default class ListInfo extends React.Component{
         this.state = {
             componentsInjected:false,
             data:[],
-            formData:{},
-            selectedData:[],
             fields:[],
             total:0,
         };
+        this._multipleSelection = [];
 
         this.$refs = {};
         this._setFiltersRef = this._setRef.bind(this,'filters');
@@ -99,6 +102,10 @@ export default class ListInfo extends React.Component{
     @action
     _handleSizeChange = (pageSize)=>{
         this.pageSize = pageSize;
+    }
+
+    _handleSelectChange = (selection)=>{
+        this._multipleSelection = selection;
     }
 
 
@@ -231,6 +238,7 @@ export default class ListInfo extends React.Component{
                 columns={this._cacheColumns}
                 data={this.state.data}
                 onSortChange={this._handleSortChange}
+                onSelectChange={this._handleSelectChange}
                 defaultSort={this.defaultSort}
                 {...this.props.tableConfig}
             />
@@ -270,8 +278,8 @@ export default class ListInfo extends React.Component{
 
         const beforeAfterFilterData = {
             data:this.state.data,
-            formData:this.state.formData,
-            selectedData:this.state.formData,
+            formData:this._formData,
+            selectedData:this._multipleSelection,
         };
 
         return (
