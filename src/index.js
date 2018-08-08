@@ -5,6 +5,7 @@ import 'element-theme-default';
 import "@/assets/css/bootstrap-reboot.min.css"
 import "@/assets/css/bootstrap-grid.min.css"
 import "@/assets/css/lib.css"
+import "@/assets/css/listPage.css"
 
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';

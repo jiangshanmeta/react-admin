@@ -281,8 +281,8 @@ export default{
     },
     operators:[
         {
-            name:"info",
-            // component:()=>import("@/components/common/operators/info").then((rst)=>rst.default),
+            name:"Info",
+            component:()=>import("@/components/common/operators/Info").then((rst)=>rst.default),
             config:{
                 getDetailInfo:getUserDetail,
                 triggerConfig:{

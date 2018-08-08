@@ -35,8 +35,8 @@ export default class Operators extends React.Component{
             return;
         }
 
-        const components = this.operators.filter((item)=>item.component)
-        
+        const components = this.props.operators.filter((item)=>item.component)
+
         new Promise((resolve)=>{
             injectComponents(components,this._operatorComponents,resolve)
         }).then(()=>{
@@ -67,13 +67,14 @@ export default class Operators extends React.Component{
         delete $attrs.operators;
         
         return (
-            <section>
+            <section className="operator-container">
                 {this.props.operators.map((item,index)=>{
                     if(item.component){
-                        const Component = this._importOperatorComponents[item.name];
+                        const Component = this._operatorComponents[item.name];
                         return (
                             <Component
                                 key={index}
+                                data={this.props.data}
                                 fieldList={this.props.fieldList}
                                 onUpdate={this.notifyUpdate}
                                 {...$attrs}

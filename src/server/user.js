@@ -139,7 +139,7 @@ const detailFields = [
 ];
 
 function getUserDetail(cb){
-    let id = this.data.id;
+    let id = this.props.data.id;
 
     for(let item of userTable){
         if(item.id === id){
