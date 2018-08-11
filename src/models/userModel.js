@@ -150,10 +150,9 @@ export default{
                 name:"field_text_rich",
                 default:"这是富文本编辑器蛤",
             },
-            // view:{
-
-                // component:()=>import("@/components/common/views/view_html").then((rst)=>rst.default),
-            // },
+            view:{
+                component:()=>import("@/components/common/views/viewHTML").then(rst=>rst.default)
+            },
             colspan:{
                 create:3,
                 edit:3,
