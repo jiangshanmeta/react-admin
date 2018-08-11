@@ -198,6 +198,10 @@ export default class ListInfo extends React.Component{
             return null;
         }
 
+        if(this._needInjectViewComponents.length && !this.state.componentsInjected){
+            return null;
+        }
+
         if(!this._cacheColumns){
             const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
 
@@ -264,7 +268,7 @@ export default class ListInfo extends React.Component{
     }
 
     render(){
-        if(Object.keys(this.props.fieldList).length === 0 || (this.hasViewComponent && !this.state.componentsInjected) ){
+        if(Object.keys(this.props.fieldList).length === 0){
             return null;
         }
 

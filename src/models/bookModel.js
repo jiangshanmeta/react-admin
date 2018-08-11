@@ -55,15 +55,14 @@ export default{
                 },
                 default:0,
             },
-            // view:{
-            //     name:"view_transform",
-            //     // component:()=>import("@/components/common/views/view_transform").then((rst)=>rst.default),
-            //     config:{
-            //         transform:function(data){
-            //             return "¥" + data;
-            //         },
-            //     }
-            // },
+            view:{
+                component:()=>import("@/components/common/views/viewTransform").then((rst)=>rst.default),
+                config:{
+                    transform:function(data){
+                        return "¥" + data;
+                    },
+                }
+            },
         },
         address:{
             label:"收货地址",
