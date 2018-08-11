@@ -22,9 +22,6 @@ import {
 
 import Filters from "@/components/common/editor/Filters"
 
-function isViewComponent(fieldList,field){
-    return fieldList[field].view && fieldList[field].view.component;
-}
 
 export default class ListInfo extends React.Component{
     @observable sortField = null;
@@ -74,12 +71,18 @@ export default class ListInfo extends React.Component{
         this._setFiltersRef = this._setRef.bind(this,'filters');
 
         this._fieldTableColumnMap = {};
-        this.__isViewComponent = isViewComponent.bind(null,props.fieldList);
-        this.__hasViewComponent = Object.keys(props.fieldList).some(this.__isViewComponent);
-        
+
+        this._needInjectViewComponents = Object.keys(props.fieldList).filter((field)=>{
+            return props.fieldList[field].view && props.fieldList[field].view.component;
+        }).map((field)=>{
+            return {
+                name:field,
+                component:props.fieldList[field].view.component,
+            }
+        });
 
         this._cacheColumns = null;
-        this._importViewComponent();
+        this._injectViewComponents();
         this.getListInfo();
     }
 
@@ -173,25 +176,14 @@ export default class ListInfo extends React.Component{
         },{});
     }
 
-    _importViewComponent(){
+    _injectViewComponents(){
         const fieldViewComponentMap = {};
-        
-        if(!this.__hasViewComponent){
-            this._setFieldTableColumnMap(fieldViewComponentMap);
-            return;
+
+        if(!this._needInjectViewComponents.length){
+            return this._setFieldTableColumnMap(fieldViewComponentMap);
         }
-        const fieldList = this.props.fieldList;
-        const fields = Object.keys(fieldList);
-        const hasViewComponentFields = fields.filter(this.__isViewComponent);
-        const components = hasViewComponentFields.map((field)=>{
-            return {
-                name:field,
-                component:fieldList[field].view.component,
-            }
-        })
 
-
-        injectComponents(components,fieldViewComponentMap).then(()=>{
+        injectComponents(this._needInjectViewComponents,fieldViewComponentMap).then(()=>{
             this._setFieldTableColumnMap(fieldViewComponentMap)
             this.setState({
                 componentsInjected:true,
