@@ -96,14 +96,12 @@ export default class Filters extends React.Component{
             return arr;
         },[]);
 
-        new Promise((resolve)=>{
-            injectComponents(components,this.filterComponents,resolve)
-        }).then(()=>{
+        injectComponents(components,this.filterComponents).then(()=>{
             this.setState({
                 componentsInjected:true,
-            });
+            })
         }).catch(logError);
-        
+
     }
 
     _setRef(refName,refValue){

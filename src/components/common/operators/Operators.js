@@ -37,13 +37,11 @@ export default class Operators extends React.Component{
 
         const components = this.props.operators.filter((item)=>item.component)
 
-        new Promise((resolve)=>{
-            injectComponents(components,this._operatorComponents,resolve)
-        }).then(()=>{
+        injectComponents(components,this._operatorComponents).then(()=>{
             this.setState({
                 componentsInjected:true,
             })
-        }).catch(logError)
+        }).catch(logError);
 
     }
 

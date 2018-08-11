@@ -9,21 +9,60 @@ import {
     logError,
 } from "@/widget/utility"
 
+import {
+    injectComponents
+} from "@/widget/injectComponents"
+
+import Views from "@/components/common/views/Views"
 import MetaTable from "@/components/common/MetaTable"
 
 export default class Info extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            labelComponentsInjected:false,
+            viewComponentsInjected:false,
             dialogVisible:false,
         };
         this.canInitDialog = false;
         this.fields = [];
         this.record = null;
 
+        this.needInjectLabelComponents = Object.keys(props.fieldList).filter((field)=>{
+            return props.fieldList[field].labelComponent;
+        }).map((field)=>{
+            return {
+                name:field,
+                component:props.fieldList[field].labelComponent.component,
+            };
+        });
+
+        this.needInjectViewComponents = Object.keys(props.fieldList).filter((field)=>{
+            return props.fieldList[field].view && props.fieldList[field].view.component;
+        }).map((field)=>{
+            return {
+                name:field,
+                component:props.fieldList[field].view.component,
+            };
+        });
+
+        this.injectInited = false;
+
+        this.labelComponents = {};
+        this.viewComponents = {};
+    }
+
+    get componentsInjected(){
+        return this.state.labelComponentsInjected && this.state.viewComponentsInjected;
     }
 
     handleClick = ()=>{
+        if(!this.injectInited){
+            this.injectLabelComponents();
+            this.injectViewComponents();
+            this.injectInited = true;
+        }
+
         new Promise((resolve)=>{
             this.props.getDetailInfo.call(this,resolve);
         }).then(({fields,record})=>{
@@ -35,8 +74,34 @@ export default class Info extends React.Component{
                 dialogVisible:true,
             });
         }).catch(logError);
+    }
 
+    injectLabelComponents(){
+        if(!this.needInjectLabelComponents.length){
+            return this.setState({
+                labelComponentsInjected:true,
+            });
+        }
 
+        injectComponents(this.needInjectLabelComponents,this.labelComponents).then(()=>{
+            this.setState({
+                labelComponentsInjected:true,
+            })
+        }).catch(logError);
+    }
+
+    injectViewComponents(){
+        if(!this.needInjectViewComponents.length){
+            return this.setState({
+                viewComponentsInjected:true,
+            });
+        }
+
+        injectComponents(this.needInjectViewComponents,this.viewComponents).then(()=>{
+            this.setState({
+                viewComponentsInjected:true,
+            })
+        }).catch(logError);
     }
 
     closeDialog = ()=>{
@@ -50,7 +115,14 @@ export default class Info extends React.Component{
     }
 
     renderField = ({field})=>{
-        return this.record[field];
+        return (
+            <Views
+                data={this.record}
+                descriptor={this.props.fieldList[field].view}
+                field={field}
+                Component={this.viewComponents[field]}
+            />
+        )
     }
 
     renderDialog(){
@@ -63,6 +135,7 @@ export default class Info extends React.Component{
                 onCancel={this.closeDialog}
                 {...this.props.dialogConfig}
             >
+                {this.componentsInjected &&
                 <Dialog.Body>
                     <MetaTable
                         fieldList={this.props.fieldList}
@@ -72,6 +145,7 @@ export default class Info extends React.Component{
                         mode="info"
                     ></MetaTable>
                 </Dialog.Body>
+                }
             </Dialog>
         )
     }

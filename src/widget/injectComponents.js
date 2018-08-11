@@ -11,7 +11,7 @@ function setReactComponentFlag(...Components){
     });
 }
 
-function injectComponents(Components,target,cb){
+function injectComponents(Components,target){
     const syncComponents = Components.filter((item)=>isReactComponent(item.component));
     syncComponents.forEach((item)=>{
         target[item.name] = item.component;
@@ -24,7 +24,7 @@ function injectComponents(Components,target,cb){
         });
     });
 
-    Promise.all(asyncComponets).then(cb);
+    return Promise.all(asyncComponets);
 }
 
 export {

@@ -189,15 +189,15 @@ export default class ListInfo extends React.Component{
                 component:fieldList[field].view.component,
             }
         })
-        
-        new Promise((resolve)=>{
-            injectComponents(components,fieldViewComponentMap,resolve)
-        }).then(()=>{
+
+
+        injectComponents(components,fieldViewComponentMap).then(()=>{
             this._setFieldTableColumnMap(fieldViewComponentMap)
             this.setState({
                 componentsInjected:true,
             })
         }).catch(logError);
+
     }
 
 
