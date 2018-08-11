@@ -115,6 +115,9 @@ export default{
                     enums:typHash
                 },
             },
+            labelComponent:{
+                component:()=>import("@/components/user/labels/LabelRedStar").then(rst=>rst.default),
+            },
         },
         privilege:{
             label:'权限',

@@ -13,8 +13,10 @@ import {
     injectComponents
 } from "@/widget/injectComponents"
 
-import Views from "@/components/common/views/Views"
+
 import MetaTable from "@/components/common/MetaTable"
+import Labels from "@/components/common/labels/Labels"
+import Views from "@/components/common/views/Views"
 
 export default class Info extends React.Component{
     constructor(props){
@@ -111,7 +113,14 @@ export default class Info extends React.Component{
     }
 
     renderLabel = ({field})=>{
-        return this.props.fieldList[field].label;
+        const descriptor = this.props.fieldList[field];
+        return (
+            <Labels
+                label={descriptor.label}
+                Component={this.labelComponents[field]}
+                labelComponent={descriptor.labelComponent}
+            />
+        )
     }
 
     renderField = ({field})=>{
