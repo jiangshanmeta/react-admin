@@ -144,14 +144,16 @@ export default{
         },
         {
             handler(resolve){
-                console.log(this.$attrs.formData);
-                console.log(this.$attrs.selectedData)
-                console.log(this.data)
-                this.$message({
-                    type:"warning",
-                    message:"就把选中的取消选中"
-                })
-                resolve();
+                console.log(this.props)
+                console.log(this.props.selectedData);
+                Message({
+                    message:`test`,
+                    type:"success",
+                    duration:2000
+                });
+
+                setTimeout(resolve,1000);
+
             },
             triggerConfig:{
                 type:"danger",
@@ -172,23 +174,6 @@ export default{
                 }
             }
         },
-        {
-            handler(resolve,data){
-                // const keys = ['customername','totalprice','address'];
-                // let rst = data.map((item)=>{
-                //     return keys.map((key)=>{
-                //         return item[key];
-                //     }).join(",");
-                // }).join("\r\n");
-                
-                // download(rst,"template.csv");
-            },
-            triggerConfig:{
-                text:"下载CSV",
-                type:"primary",
-            },
-
-        }
     ],
     listConfig:{
         selection:true,

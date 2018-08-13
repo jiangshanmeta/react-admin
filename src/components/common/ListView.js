@@ -2,34 +2,42 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import ListInfo from "./ListInfo"
+import Operators from "@/components/common/operators/Operators"
 
 
 export default class ListView extends React.Component{
     constructor(props){
         super(props);
-        this.state = {
-            
-        }
+        this.$refs = {};
+        this.setListInfoRef = this.setRef.bind(this,'listInfo');
+    }
 
-        
+    setRef(refName,refValue){
+        this.$refs[refName] = refValue;
+    }
+
+    refreshListData = ()=>{
+        this.$refs.listInfo && this.$refs.listInfo.getListInfo();
     }
 
 
     renderStaticOperators = (info)=>{
         return (
-            <div>
-                static Operators
-            </div>
+            <Operators
+                fieldList={this.props.fieldList}
+                operators={this.props.staticOperators}
+                onUpdate={this.refreshListData}
+                {...info}
+            ></Operators>
         )
     }
 
     render(){
-
-
         return (
             <section>
                 {this.props.beforeAll}
                 <ListInfo
+                    ref={this.setListInfoRef}
                     beforeFilters={this.renderStaticOperators}
                     fieldList={this.props.fieldList}
                     filters={this.props.filters}

@@ -5,7 +5,8 @@ import {
     Pagination,
 } from "element-react";
 
-import {observable,computed,reaction,action} from "mobx";
+import {observable,computed,reaction,action,toJS} from "mobx";
+import {observer} from 'mobx-react'
 
 import Views from "@/components/common/views/Views"
 import Operators from "@/components/common/operators/Operators"
@@ -22,12 +23,13 @@ import {
 
 import Filters from "@/components/common/editor/Filters"
 
-
+@observer
 export default class ListInfo extends React.Component{
     @observable sortField = null;
     @observable sortOrder = null;
     @observable pageIndex = 1;
     @observable pageSize = 20;
+    @observable multipleSelection = [];
 
     @computed get defaultSort(){
         return {
@@ -65,7 +67,7 @@ export default class ListInfo extends React.Component{
             fields:[],
             total:0,
         };
-        this._multipleSelection = [];
+
 
         this.$refs = {};
         this._setFiltersRef = this._setRef.bind(this,'filters');
@@ -107,8 +109,9 @@ export default class ListInfo extends React.Component{
         this.pageSize = pageSize;
     }
 
+    @action
     _handleSelectChange = (selection)=>{
-        this._multipleSelection = selection;
+        this.multipleSelection = selection;
     }
 
 
@@ -275,7 +278,7 @@ export default class ListInfo extends React.Component{
         const beforeAfterFilterData = {
             data:this.state.data,
             formData:this._formData,
-            selectedData:this._multipleSelection,
+            selectedData:toJS(this.multipleSelection),
         };
 
         return (
