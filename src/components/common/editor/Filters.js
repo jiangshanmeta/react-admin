@@ -18,6 +18,8 @@ import {
     injectComponents
 } from "@/widget/injectComponents"
 
+import Operators from "@/components/common/operators/Operators"
+
 import {
     logError,
 } from "@/widget/utility"
@@ -173,13 +175,21 @@ export default class Filters extends React.Component{
                 })}
 
                 <Form.Item>
-                    <section>
+                    <section style={{display:'flex',alignItems:'flex-start',fontSize:0}}>
                         <Button
                             type="primary"
                             onClick={this.search}
                         >
                             查询
                         </Button>
+
+                        <Operators
+                            fieldList={this.props.fieldList}
+                            operators={this.props.filterOperators}
+                            filters={this.props.filters}
+                            data={this._formData}
+                            onUpdate={this.onSearch}
+                        />
                     </section>
                 </Form.Item>
             </Form>

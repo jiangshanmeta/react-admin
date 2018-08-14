@@ -267,7 +267,7 @@ export default{
     filterOperators:[
         {
             name:"reset",
-            // component:()=>import("@/components/common/filterOperators/reset").then((rst)=>rst.default),
+            component:()=>import("@/components/common/filterOperators/Reset").then((rst)=>rst.default),
         },
     ],
     listConfig:{
