@@ -18,6 +18,8 @@ import MetaTable from "@/components/common/MetaTable"
 import Labels from "@/components/common/labels/Labels"
 import Views from "@/components/common/views/Views"
 
+import filterLabelComponents from "@/injectHelper/labelComponentHelper"
+
 export default class Info extends React.Component{
     constructor(props){
         super(props);
@@ -30,23 +32,7 @@ export default class Info extends React.Component{
         this.fields = [];
         this.record = null;
 
-        this.needInjectLabelComponents = Object.keys(props.fieldList).filter((field)=>{
-            return props.fieldList[field].labelComponent;
-        }).map((field)=>{
-            return {
-                name:field,
-                component:props.fieldList[field].labelComponent.component,
-            };
-        });
 
-        this.needInjectViewComponents = Object.keys(props.fieldList).filter((field)=>{
-            return props.fieldList[field].view && props.fieldList[field].view.component;
-        }).map((field)=>{
-            return {
-                name:field,
-                component:props.fieldList[field].view.component,
-            };
-        });
 
         this.injectInited = false;
 
@@ -60,6 +46,23 @@ export default class Info extends React.Component{
 
     handleClick = ()=>{
         if(!this.injectInited){
+            const {
+                list,
+                map
+            } = filterLabelComponents(this.props.fieldList,Object.keys(this.props.fieldList),'info');
+    
+            this.needInjectLabelComponentsList = list;
+            this.needInjectLabelComponentsMap = map;
+    
+            this.needInjectViewComponents = Object.keys(this.props.fieldList).filter((field)=>{
+                return this.props.fieldList[field].view && this.props.fieldList[field].view.component;
+            }).map((field)=>{
+                return {
+                    name:field,
+                    component:this.props.fieldList[field].view.component,
+                };
+            });
+
             this.injectLabelComponents();
             this.injectViewComponents();
             this.injectInited = true;
@@ -79,13 +82,13 @@ export default class Info extends React.Component{
     }
 
     injectLabelComponents(){
-        if(!this.needInjectLabelComponents.length){
+        if(!this.needInjectLabelComponentsList.length){
             return this.setState({
                 labelComponentsInjected:true,
             });
         }
 
-        injectComponents(this.needInjectLabelComponents,this.labelComponents).then(()=>{
+        injectComponents(this.needInjectLabelComponentsList,this.labelComponents).then(()=>{
             this.setState({
                 labelComponentsInjected:true,
             })
@@ -118,7 +121,7 @@ export default class Info extends React.Component{
             <Labels
                 label={descriptor.label}
                 Component={this.labelComponents[field]}
-                labelComponent={descriptor.labelComponent}
+                labelComponent={this.needInjectLabelComponentsMap[field]}
             />
         )
     }

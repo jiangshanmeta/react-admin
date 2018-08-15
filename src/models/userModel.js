@@ -116,7 +116,13 @@ export default{
                 },
             },
             labelComponent:{
-                component:()=>import("@/components/user/labels/LabelRedStar").then(rst=>rst.default),
+                default:{
+                    component:()=>import("@/components/user/labels/LabelRedStar").then(rst=>rst.default),
+                },
+                info:{
+                    component:()=>import("@/components/user/labels/LabelRedStar").then(rst=>rst.default),
+                }
+                
             },
         },
         privilege:{

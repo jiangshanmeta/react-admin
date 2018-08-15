@@ -1,8 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types";
 
-import MetaTable from "@/components/common/MetaTable"
-
 import {
     observable,
     computed,
@@ -13,6 +11,15 @@ import {
 import {
     observer
 } from "mobx-react"
+
+import MetaTable from "@/components/common/MetaTable"
+import Labels from "@/components/common/labels/Labels"
+
+import filterLabelComponents from "@/injectHelper/labelComponentHelper"
+
+import {
+    injectComponents
+} from "@/widget/injectComponents"
 
 @observer
 export default class Editor extends React.Component{
@@ -37,19 +44,20 @@ export default class Editor extends React.Component{
     }
 
     @computed get needInjectLabelComponents(){
-
+        return filterLabelComponents(this.props.fieldList,this.fieldsPlain,this.props.mode);
     }
 
     @computed get needInjectEditorComponents(){
-
+        // TODO
+        return [];
     }
 
     @computed get hasInjectComponent(){
-
+        return this.needInjectLabelComponents.list.length || this.needInjectEditorComponents.length;
     }
 
     @computed get componentsInjected(){
-
+        return this.labelComponentsInjected && this.editorComponentsInjected;
     }
 
 
@@ -62,15 +70,44 @@ export default class Editor extends React.Component{
 
         this.$refs = {};
 
+        this.labelComponents = {};
+        this.editorComponents = {};
+
         reaction(()=>{
             return {
                 record:this.props.record
             }
-        },()=>{
-            console.log("watch record")
-        },{
+        },this.reset,{
             fireImmediately:true,
         });
+    }
+
+    @action
+    reset = ()=>{
+        this.labelComponentsInjected = false;
+        this.editorComponentsInjected = false;
+        this.injectLabelComponents();
+        this.injectEditorComponents();
+    }
+
+    injectLabelComponents(){
+        console.log(this.needInjectLabelComponents.list);
+        if(!this.needInjectLabelComponents.list.length){
+            return this.labelComponentsInjected = true;
+        }
+
+        injectComponents(this.needInjectLabelComponents.list,this.labelComponents).then(()=>{
+            this.labelComponentsInjected = true;
+        });
+    }
+
+    injectEditorComponents(){
+        if(!this.needInjectEditorComponents.length){
+            return this.editorComponentsInjected = true;
+        }
+        // TODO
+        
+
     }
 
     setRef(refKey,refValue){
@@ -78,8 +115,13 @@ export default class Editor extends React.Component{
     }
 
     renderLabel = ({field})=>{
+        const descriptor = this.props.fieldList[field];
         return (
-            <div>{field}</div>
+            <Labels
+                label={descriptor.label}
+                Component={this.labelComponents[field]}
+                labelComponent={this.needInjectLabelComponents.map[field]}
+            />
         )
     }
 
@@ -90,6 +132,10 @@ export default class Editor extends React.Component{
     }
 
     render(){
+        if(this.hasInjectComponent && !this.componentsInjected){
+            return null;
+        }
+
         return (
             <MetaTable
                 fieldList={this.props.fieldList}
