@@ -299,7 +299,7 @@ export default{
         },
         {
             name:"edit",
-            // component:()=>import("@/components/common/operators/edit").then((rst)=>rst.default),
+            component:()=>import("@/components/common/operators/Edit").then((rst)=>rst.default),
             config:{
                 getEditInfo:getEditUserInfo,
                 doEditRequest:editUser,

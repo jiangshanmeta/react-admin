@@ -160,12 +160,12 @@ const editFields = [
 ];
 
 function getEditUserInfo(cb){
-    let id = this.id;
+    const id = this.props.data.id;
     for(let item of userTable){
         if(item.id === id){
             console.log(item);
             cb({
-                fields:editFields,
+                fields:JSON.parse(JSON.stringify(editFields)),
                 record:JSON.parse(JSON.stringify(item)),
             });
             return;
