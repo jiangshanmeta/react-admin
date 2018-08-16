@@ -28,11 +28,18 @@ export default class Operators extends React.Component{
             }
             return obj;
         },Object.create(null));
+
+        this.$refs = {};
+        this.setOperatorRef = this.setRefs.bind(this,'operators');
+    }
+
+    setRefs(refKey,refValue){
+        this.$refs[refKey] = refValue;
     }
 
     _importOperatorComponents(){
         if(!this._hasOperatorComponent){
-            return;
+            return this.notifytWidth();
         }
 
         const components = this.props.operators.filter((item)=>item.component)
@@ -40,9 +47,19 @@ export default class Operators extends React.Component{
         injectComponents(components,this._operatorComponents).then(()=>{
             this.setState({
                 componentsInjected:true,
-            })
+            });
+            this.notifytWidth();
         }).catch(logError);
 
+    }
+
+    notifytWidth(){
+        // react 沒有vue的$nextTick?
+        setTimeout(()=>{
+            const width = this.$refs.operators.scrollWidth;
+            const setOperatorWidth = this.props.setOperatorWidth;
+            typeof setOperatorWidth === 'function' && setOperatorWidth(width);
+        },0);
     }
 
     handleOperatorTrigger = (handler)=>{
@@ -65,7 +82,7 @@ export default class Operators extends React.Component{
         delete $attrs.operators;
         
         return (
-            <section className="operator-container">
+            <section className="operator-container" ref={this.setOperatorRef}>
                 {this.props.operators.map((item,index)=>{
                     if(item.component){
                         const Component = this._operatorComponents[item.name];

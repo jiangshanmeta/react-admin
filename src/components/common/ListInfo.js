@@ -45,6 +45,8 @@ export default class ListInfo extends React.Component{
     constructor(props){
         super(props);
 
+        this.operatorMinWidth = 0;
+
         if(props.defaultSort){
             this.sortField = props.defaultSort.prop;
             this.sortOrder = props.defaultSort.order;
@@ -196,6 +198,43 @@ export default class ListInfo extends React.Component{
     }
 
 
+    _setOperatorWidth = (width)=>{
+        if(width>this.operatorMinWidth){
+            this.operatorMinWidth = width;
+            this._setCacheColumns();
+            this.forceUpdate();
+        }
+    }
+
+    _setCacheColumns(){
+        const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
+
+        if(this.props.selection){
+            columns.unshift({
+                type:'selection',
+            });
+        }
+
+        if(this.props.operators.length){
+            columns.push({
+                label:this.props.operatorsLabel,
+                minWidth:this.operatorMinWidth,
+                render:(data)=>{
+                    return (
+                        <Operators
+                            data={data}
+                            fieldList={this.props.fieldList}
+                            operators={this.props.operators}
+                            onUpdate={this.getListInfo}
+                            setOperatorWidth={this._setOperatorWidth}
+                        />
+                    )
+                },
+            });
+        }
+        this._cacheColumns = columns;
+    }
+
     _renderTable(){
         if(this.state.data.length === 0 || this.state.fields.length === 0){
             return null;
@@ -206,30 +245,7 @@ export default class ListInfo extends React.Component{
         }
 
         if(!this._cacheColumns){
-            const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
-
-            if(this.props.selection){
-                columns.unshift({
-                    type:'selection',
-                });
-            }
-
-            if(this.props.operators.length){
-                columns.push({
-                    label:this.props.operatorsLabel,
-                    render:(data)=>{
-                        return (
-                            <Operators
-                                data={data}
-                                fieldList={this.props.fieldList}
-                                operators={this.props.operators}
-                                onUpdate={this.getListInfo}
-                            />
-                        )
-                    },
-                });
-            }
-            this._cacheColumns = columns;
+            this._setCacheColumns();
         }
 
         return (
