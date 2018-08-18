@@ -6,6 +6,7 @@ import {
     computed,
     reaction,
     action,
+    toJS,
 } from "mobx"
 
 import {
@@ -60,8 +61,9 @@ export default class Editor extends React.Component{
     }
 
     @computed get formData(){
+        const record = toJS(this.record)
         return this.fieldsPlain.reduce((obj,field)=>{
-            obj[field] = this.record[this.field];
+            obj[field] = record[field];
             return obj;
         },{});
     }
@@ -97,9 +99,6 @@ export default class Editor extends React.Component{
 
     constructor(props){
         super(props);
-        this.state = {
-
-        };
 
         this.$refs = {};
 
@@ -127,9 +126,7 @@ export default class Editor extends React.Component{
     }
 
     onChange(field,value){
-    
         this.record[field] = value;
-        console.log(field,value,this.record)
     }
 
     @action

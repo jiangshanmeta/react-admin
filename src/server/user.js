@@ -175,7 +175,7 @@ function getEditUserInfo(cb){
 }
 
 function editUser(cb,data){
-    let id = this.id;
+    let id = data.id;
     for(let item of userTable){
         if(item.id === id){
             let keys = Object.keys(item);

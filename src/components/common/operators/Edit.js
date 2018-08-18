@@ -20,6 +20,13 @@ export default class Edit extends React.Component{
         this.canInitDialog = false;
         this.fields = [];
         this.record = null;
+        this.$refs = {};
+
+        this._setEditorRef = this.setRef.bind(this,'editor');
+    }
+
+    setRef(key,value){
+        this.$refs[key] = value;
     }
 
     getEditFields = ()=>{
@@ -43,7 +50,19 @@ export default class Edit extends React.Component{
     }
 
     doEdit = ()=>{
-        console.log("doEdit");
+        const data = JSON.parse(JSON.stringify(this.$refs.editor.formData));
+
+        this.props.reserveFields.forEach((field)=>{
+            data[field] = this.record[field];
+        });
+
+        new Promise((resolve)=>{
+            this.props.doEditRequest.call(this,resolve,this.props.transformData.call(this,data));
+        }).then(()=>{
+            this.closeDialog();
+            this.props.onUpdate();
+        }).catch(logError);
+
     }
 
     renderDialog(){
@@ -59,6 +78,7 @@ export default class Edit extends React.Component{
             >
                 <Dialog.Body>
                     <Editor
+                        ref={this._setEditorRef}
                         fieldList={this.props.fieldList}
                         fields={this.fields}
                         record={this.record}
@@ -110,6 +130,11 @@ Edit.propTypes = {
     dialogConfig:PropTypes.object,
     cancelBtnConfig:PropTypes.object,
     editBtnConfig:PropTypes.object,
+
+    transformData:PropTypes.func,
+    reserveFields:PropTypes.array,
+    doEditRequest:PropTypes.func.isRequired,
+
 }
 
 Edit.defaultProps = {
@@ -117,4 +142,8 @@ Edit.defaultProps = {
     dialogConfig:{},
     cancelBtnConfig:{},
     editBtnConfig:{},
+    transformData(data){
+        return data;
+    },
+    reserveFields:[],
 }
