@@ -24,14 +24,11 @@ import {
     logError,
 } from "@/widget/utility"
 
-import FieldString from "./FieldString"
-import FieldNumber from "./FieldNumber"
-import FieldEnumSelect from "./FieldEnumSelect"
 
 const defaultFilterComponents = {
-    FieldString,
-    FieldNumber,
-    FieldEnumSelect,
+    FieldString:()=>import("./FieldString").then(rst=>rst.default),
+    FieldNumber:()=>import("./FieldNumber").then(rst=>rst.default),
+    FieldEnumSelect:()=>import("./FieldEnumSelect").then(rst=>rst.default),
 };
 
 
@@ -66,7 +63,8 @@ export default class Filters extends React.Component{
             },this.search);
         }
 
-        this.filterComponents = Object.assign({},defaultFilterComponents);
+        // this.filterComponents = Object.assign({},defaultFilterComponents);
+        this.filterComponents = {};
         this._importFilterComponents();
 
         this.$refs = {};
@@ -88,13 +86,21 @@ export default class Filters extends React.Component{
             return;
         }
 
-        const components = this.props.filters.reduce((arr,{editorComponent})=>{
+        const components = this.props.filters.reduce((arr,{field,editorComponent})=>{
+            let filterComponent;
             if(editorComponent.component){
-                arr.push({
-                    name:editorComponent.name,
-                    component:editorComponent.component,
-                });
+                filterComponent = editorComponent.component;
+            }else if(editorComponent.name){
+                filterComponent = defaultFilterComponents[editorComponent.name];
             }
+
+            if(filterComponent){
+                arr.push({
+                    name:field,
+                    component:filterComponent,
+                })
+            }
+
             return arr;
         },[]);
 
@@ -160,7 +166,7 @@ export default class Filters extends React.Component{
             <Form inline={true}>
                 {this.props.filters.map((item)=>{
                     const editorComponent = item.editorComponent;
-                    const Component = this.filterComponents[editorComponent.name];
+                    const Component = this.filterComponents[item.field];
                     return (
                         <Form.Item key={item.field} label={item.label}>
                             <Component
