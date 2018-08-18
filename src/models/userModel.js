@@ -29,7 +29,7 @@ export default{
         name:{
             label:'用户名',
             editorComponent:{
-                name:"field_string",
+                name:"FieldString",
                 config:{
                     placeholder:'请输入用户名',
                 },
@@ -61,7 +61,7 @@ export default{
         password:{
             label:'密码',
             editorComponent:{
-                name:"field_pwd",
+                name:"FieldPwd",
                 config:{
                     placeholder:'请输入密码',
                 },
@@ -83,7 +83,8 @@ export default{
         gender:{
             label:'性别',
             editorComponent:{
-                name:"field_sex",
+                // TODO fieldsex
+                name:"FieldString",
                 default:0,
             },
             view:{
@@ -100,7 +101,7 @@ export default{
         typ:{
             label:'类型',
             editorComponent:{
-                name:"field_enum_select",
+                name:"FieldEnumSelect",
                 config:{
                     candidate:typEnum,
                     valuefield:'value',
@@ -128,19 +129,21 @@ export default{
         privilege:{
             label:'权限',
             editorComponent:{
-                name:"field_relates_tag",
-                config:{
-                    httpRequest:getPrivilege,
-                    labelfield:'name',
-                    valuefield:'id',
-                    relates:[
-                        {
-                            invalidValue:0,
-                            relateField:'typ',
-                            requestField:'req_typ',
-                        }
-                    ],
-                },
+                name:"FieldString",
+                // TODO fieldRelatesTag
+                // name:"field_relates_tag",
+                // config:{
+                //     httpRequest:getPrivilege,
+                //     labelfield:'name',
+                //     valuefield:'id',
+                //     relates:[
+                //         {
+                //             invalidValue:0,
+                //             relateField:'typ',
+                //             requestField:'req_typ',
+                //         }
+                //     ],
+                // },
                 default(){
                     return [];
                 },
@@ -153,7 +156,9 @@ export default{
         desc:{
             label:"备注",
             editorComponent:{
-                name:"field_text_rich",
+                name:"FieldText",
+                // TDOD 
+                // name:"field_text_rich",
                 default:"这是富文本编辑器蛤",
             },
             view:{

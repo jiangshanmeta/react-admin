@@ -17,7 +17,7 @@ export default{
         customername:{
             label:'客户名',
             editorComponent:{
-                name:"field_string",
+                name:"FieldString",
                 config:{
                     placeholder:'请输入客户名',
                 },
@@ -36,7 +36,7 @@ export default{
         totalprice:{
             label:'金额',
             editorComponent:{
-                name:"field_number",
+                name:"FieldNumber",
                 config:{
                     relates:[
                         {
@@ -67,35 +67,39 @@ export default{
         address:{
             label:"收货地址",
             editorComponent:{
-                name:"field_text",
+                name:"FieldText",
                 default:"",
             },
         },
         store:{
             label:"店铺",
             editorComponent:{
-                name:"field_async_enum_select",
-                config:{
-                    httpRequest:getStore,
-                    labelfield:"storename",
-                    valuefield:"_id",
-                },
+                name:"FieldString",
+                // TODO
+                // name:"field_async_enum_select",
+                // config:{
+                //     httpRequest:getStore,
+                //     labelfield:"storename",
+                //     valuefield:"_id",
+                // },
                 default:"",
             },
         },
         saler:{
             label:"销售",
             editorComponent:{
-                name:"field_relates_enum_select",
-                config:{
-                    relates:[
-                        {
-                            invalidValue:"",
-                            relateField:"store",
-                        }
-                    ],
-                    httpRequest:getSaler,
-                },
+                name:"FieldString",
+                // TODO
+                // name:"field_relates_enum_select",
+                // config:{
+                //     relates:[
+                //         {
+                //             invalidValue:"",
+                //             relateField:"store",
+                //         }
+                //     ],
+                //     httpRequest:getSaler,
+                // },
                 default:"",
             },
         },
@@ -181,43 +185,43 @@ export default{
         paginated:false,
     },
     filters:[
-        {
-            label:"客户名",
-            field:"customername",
-            editorComponent:{
-                name:"FieldString",
-                config:{
-                    placeholder:"请输入客户名"
-                },
-                default:"",
-            }
-        },
-        {
-            label:"金额",
-            field:"totalprice",
-            editorComponent:{
-                name:"FieldNumber",
-                default:500,
-            }
-        },
+        // {
+        //     label:"客户名",
+        //     field:"customername",
+        //     editorComponent:{
+        //         name:"FieldString",
+        //         config:{
+        //             placeholder:"请输入客户名"
+        //         },
+        //         default:"",
+        //     }
+        // },
+        // {
+        //     label:"金额",
+        //     field:"totalprice",
+        //     editorComponent:{
+        //         name:"FieldNumber",
+        //         default:500,
+        //     }
+        // },
     ],
-    operators:[
-        {
-            handler(resolve,data){
-                Message({
-                    message:`${data.customername}再来一单`,
-                    type:"success",
-                    duration:2000
-                });
-                setTimeout(()=>{
-                    resolve();
-                },1000)
-            },
-            triggerConfig:{
-                text:"再来一单",
-                type:"success",
-                size:"small"
-            },
-        },
-    ],
+    // operators:[
+    //     {
+    //         handler(resolve,data){
+    //             Message({
+    //                 message:`${data.customername}再来一单`,
+    //                 type:"success",
+    //                 duration:2000
+    //             });
+    //             setTimeout(()=>{
+    //                 resolve();
+    //             },1000)
+    //         },
+    //         triggerConfig:{
+    //             text:"再来一单",
+    //             type:"success",
+    //             size:"small"
+    //         },
+    //     },
+    // ],
 }

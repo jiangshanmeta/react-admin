@@ -21,8 +21,31 @@ import {
     injectComponents
 } from "@/widget/injectComponents"
 
+const defaultEditorComponent = {
+    FieldString:()=>import("./FieldString").then(rst=>rst.default),
+    FieldPwd:()=>import("./FieldPwd").then(rst=>rst.default),
+    FieldText:()=>import("./FieldText").then(rst=>rst.default),
+    FieldNumber:()=>import("./FieldNumber").then(rst=>rst.default),
+    FieldInt:()=>import("./FieldInt").then(rst=>rst.default),
+
+    FieldEnumRadio:()=>import("./FieldEnumRadio").then(rst=>rst.default),
+    FieldEnumSelect:()=>import("./FieldEnumSelect").then(rst=>rst.default),
+    FieldModel:()=>import("./FieldModel").then(rst=>rst.default),
+    FieldAsyncEnumRadio:()=>import("./FieldAsyncEnumRadio").then(rst=>rst.default),
+    FieldAsyncEnumSelect:()=>import("./FieldAsyncEnumSelect").then(rst=>rst.default),
+    FieldAsyncModel:()=>import("./FieldAsyncModel").then(rst=>rst.default),
+
+    FieldTag:()=>import("./FieldTag").then(rst=>rst.default),
+    FieldArrayModel:()=>import("./FieldArrayModel").then(rst=>rst.default),
+    FieldAsyncTag:()=>import("./FieldAsyncTag").then(rst=>rst.default),
+    FieldAsyncArrayModel:()=>import("./FieldAsyncArrayModel").then(rst=>rst.default),
+
+};
+
+
 @observer
 export default class Editor extends React.Component{
+    @observable record = {};
     @observable labelComponentsInjected = false;
     @observable editorComponentsInjected = false;
 
@@ -38,7 +61,7 @@ export default class Editor extends React.Component{
 
     @computed get formData(){
         return this.fieldsPlain.reduce((obj,field)=>{
-            obj[field] = this.props.record[this.field];
+            obj[field] = this.record[this.field];
             return obj;
         },{});
     }
@@ -48,8 +71,20 @@ export default class Editor extends React.Component{
     }
 
     @computed get needInjectEditorComponents(){
-        // TODO
-        return [];
+        return this.fieldsPlain.map((field)=>{
+            const editorComponentConfig = this.props.fieldList[field].editorComponent;
+            let component;
+            if(editorComponentConfig.component){
+                component = editorComponentConfig.component;
+            }else if(editorComponentConfig.name){
+                component = defaultEditorComponent[editorComponentConfig.name];
+            }
+            
+            return {
+                name:field,
+                component,
+            };
+        });
     }
 
     @computed get hasInjectComponent(){
@@ -59,8 +94,6 @@ export default class Editor extends React.Component{
     @computed get componentsInjected(){
         return this.labelComponentsInjected && this.editorComponentsInjected;
     }
-
-
 
     constructor(props){
         super(props);
@@ -73,25 +106,52 @@ export default class Editor extends React.Component{
         this.labelComponents = {};
         this.editorComponents = {};
 
+        this.onChangeMap = {};
+
         reaction(()=>{
             return {
                 record:this.props.record
             }
-        },this.reset,{
+        },this.recordChangeHandler,{
+            fireImmediately:true,
+        });
+
+
+        reaction(()=>{
+            return {
+                field:this.props.fields,
+            }
+        },this.fieldsChangeHandler,{
             fireImmediately:true,
         });
     }
 
+    onChange(field,value){
+    
+        this.record[field] = value;
+        console.log(field,value,this.record)
+    }
+
     @action
-    reset = ()=>{
+    fieldsChangeHandler = ()=>{
+        this.onChangeMap = {};
+        this.fieldsPlain.forEach((field)=>{
+            this.onChangeMap[field] = this.onChange.bind(this,field);
+        });
+
         this.labelComponentsInjected = false;
         this.editorComponentsInjected = false;
         this.injectLabelComponents();
         this.injectEditorComponents();
     }
 
+    @action
+    recordChangeHandler = ()=>{
+        this.record = JSON.parse(JSON.stringify(this.props.record));
+    }
+
     injectLabelComponents(){
-        console.log(this.needInjectLabelComponents.list);
+
         if(!this.needInjectLabelComponents.list.length){
             return this.labelComponentsInjected = true;
         }
@@ -105,9 +165,10 @@ export default class Editor extends React.Component{
         if(!this.needInjectEditorComponents.length){
             return this.editorComponentsInjected = true;
         }
-        // TODO
-        
 
+        injectComponents(this.needInjectEditorComponents,this.editorComponents).then(()=>{
+            this.editorComponentsInjected = true;
+        });
     }
 
     setRef(refKey,refValue){
@@ -126,8 +187,16 @@ export default class Editor extends React.Component{
     }
 
     renderField = ({field})=>{
+        const Component = this.editorComponents[field];
+        const defaultConfig = this.props.fieldList[field].editorComponent.config || {};
+        const modeConfig = this.props.fieldList[field].editorComponent[`${this.props.mode}Config`] || {};
+        const config = Object.assign({},defaultConfig,modeConfig);
         return (
-            <div>{this.props.record[field]}</div>
+            <Component
+                value={this.record[field]}
+                onChange={this.onChangeMap[field]}
+                {...config}
+            />
         )
     }
 
