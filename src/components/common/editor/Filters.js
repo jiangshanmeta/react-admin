@@ -52,10 +52,6 @@ export default class Filters extends React.Component{
             return obj;
         },{});
 
-        this._hasInjectFilterComponent = props.filters.some((item)=>{
-            return item.editorComponent.component;
-        });
-
         const watchFilters = props.filters.filter(item=>item.watch);
         if(watchFilters.length){
             reaction(()=>{
@@ -63,7 +59,6 @@ export default class Filters extends React.Component{
             },this.search);
         }
 
-        // this.filterComponents = Object.assign({},defaultFilterComponents);
         this.filterComponents = {};
         this._importFilterComponents();
 
@@ -82,7 +77,7 @@ export default class Filters extends React.Component{
 
 
     _importFilterComponents(){
-        if(!this._hasInjectFilterComponent){
+        if(!this.props.filters.length){
             return;
         }
 
@@ -158,7 +153,7 @@ export default class Filters extends React.Component{
     }
 
     render(){
-        if(!this.props.filters.length || (this._hasInjectFilterComponent && !this.state.componentsInjected) ){
+        if(!this.props.filters.length || (!this.state.componentsInjected) ){
             return null;
         }
 
@@ -167,6 +162,7 @@ export default class Filters extends React.Component{
                 {this.props.filters.map((item)=>{
                     const editorComponent = item.editorComponent;
                     const Component = this.filterComponents[item.field];
+
                     return (
                         <Form.Item key={item.field} label={item.label}>
                             <Component
@@ -189,13 +185,14 @@ export default class Filters extends React.Component{
                             查询
                         </Button>
 
+                        {Boolean(this.props.filterOperators.length) && 
                         <Operators
                             fieldList={this.props.fieldList}
                             operators={this.props.filterOperators}
                             filters={this.props.filters}
                             data={this._formData}
                             onUpdate={this.onSearch}
-                        />
+                        />}
                     </section>
                 </Form.Item>
             </Form>

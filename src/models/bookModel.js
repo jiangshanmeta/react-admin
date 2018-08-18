@@ -185,43 +185,43 @@ export default{
         paginated:false,
     },
     filters:[
-        // {
-        //     label:"客户名",
-        //     field:"customername",
-        //     editorComponent:{
-        //         name:"FieldString",
-        //         config:{
-        //             placeholder:"请输入客户名"
-        //         },
-        //         default:"",
-        //     }
-        // },
-        // {
-        //     label:"金额",
-        //     field:"totalprice",
-        //     editorComponent:{
-        //         name:"FieldNumber",
-        //         default:500,
-        //     }
-        // },
+        {
+            label:"客户名",
+            field:"customername",
+            editorComponent:{
+                name:"FieldString",
+                config:{
+                    placeholder:"请输入客户名"
+                },
+                default:"",
+            }
+        },
+        {
+            label:"金额",
+            field:"totalprice",
+            editorComponent:{
+                name:"FieldNumber",
+                default:500,
+            }
+        },
     ],
-    // operators:[
-    //     {
-    //         handler(resolve,data){
-    //             Message({
-    //                 message:`${data.customername}再来一单`,
-    //                 type:"success",
-    //                 duration:2000
-    //             });
-    //             setTimeout(()=>{
-    //                 resolve();
-    //             },1000)
-    //         },
-    //         triggerConfig:{
-    //             text:"再来一单",
-    //             type:"success",
-    //             size:"small"
-    //         },
-    //     },
-    // ],
+    operators:[
+        {
+            handler(resolve,data){
+                Message({
+                    message:`${data.customername}再来一单`,
+                    type:"success",
+                    duration:2000
+                });
+                setTimeout(()=>{
+                    resolve();
+                },1000)
+            },
+            triggerConfig:{
+                text:"再来一单",
+                type:"success",
+                size:"small"
+            },
+        },
+    ],
 }

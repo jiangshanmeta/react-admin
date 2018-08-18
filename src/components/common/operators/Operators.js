@@ -53,13 +53,25 @@ export default class Operators extends React.Component{
 
     }
 
-    notifytWidth(){
-        // react 沒有vue的$nextTick?
-        setTimeout(()=>{
+    _widthHandler = ()=>{
+        const setOperatorWidth = this.props.setOperatorWidth;
+        if(typeof setOperatorWidth === 'function'){
             const width = this.$refs.operators.scrollWidth;
-            const setOperatorWidth = this.props.setOperatorWidth;
-            typeof setOperatorWidth === 'function' && setOperatorWidth(width);
-        },0);
+            setOperatorWidth(width);
+        }
+    }
+
+    notifytWidth = ()=>{
+        // react 沒有vue的$nextTick?
+        if(this.props.operators.length){
+            setTimeout(()=>{
+                if(this.$refs.operators){
+                    this._widthHandler();
+                }else{
+                    setTimeout(this.notifytWidth,0);
+                }
+            },0);
+        }
     }
 
     handleOperatorTrigger = (handler)=>{
@@ -74,7 +86,7 @@ export default class Operators extends React.Component{
     }
 
     render(){
-        if(this.props.length === 0 || (this._hasOperatorComponent && !this.state.componentsInjected)){
+        if(this.props.operators.length === 0 || (this._hasOperatorComponent && !this.state.componentsInjected)){
             return null;
         }
 
