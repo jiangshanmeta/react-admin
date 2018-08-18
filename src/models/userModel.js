@@ -174,7 +174,7 @@ export default{
     staticOperators:[
         {
             name:"create",
-            // component:()=>import("@/components/common/staticOperators/create").then((rst)=>rst.default),
+            component:()=>import("@/components/common/staticOpetators/Create").then((rst)=>rst.default),
             config:{
                 getCreateFields:getCreateFields,
                 doCreateRequest:createUser,
