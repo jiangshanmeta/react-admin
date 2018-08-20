@@ -190,11 +190,12 @@ function editUser(cb,data){
     cb();
 }
 
-function delUser(cb){
-    let id = this.id;
+function delUser(cb,data){
+    let id = data.id;
     for(let index in userTable){
         if(userTable[index]['id'] === id){
             userTable.splice(index,1);
+            cb();
         }
     }
 }

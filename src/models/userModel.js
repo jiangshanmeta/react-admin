@@ -354,7 +354,7 @@ export default{
         },
         {
             name:"delete",
-            // component:()=>import("@/components/common/operators/delete").then((rst)=>rst.default),
+            component:()=>import("@/components/common/operators/Delete").then((rst)=>rst.default),
             config:{
                 doDeleteRequest:delUser,
                 triggerConfig:{
