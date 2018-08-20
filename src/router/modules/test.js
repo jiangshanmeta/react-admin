@@ -21,6 +21,13 @@ export default{
             label:"tag editor",
             component:()=>import("@/pages/test/Test_tag"),
         },
+        {
+            path:"/test/test_filter",
+            label:"filter",
+            component:()=>import("@/pages/test/Test_filter"),
+        }
+
+
     ],
 
 }
