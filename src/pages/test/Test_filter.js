@@ -4,12 +4,13 @@ import TestTable from "./_testTable"
 import FilterEnum from "@/components/common/editor/FilterEnum"
 import FilterAsyncEnum from "@/components/common/editor/FilterAsyncEnum"
 import FilterModel from "@/components/common/editor/FilterModel"
-
+import FilterAsyncModel from "@/components/common/editor/FilterAsyncModel"
 
 const Components = {
     FilterEnum,
     FilterAsyncEnum,
     FilterModel,
+    FilterAsyncModel,
 };
 
 
@@ -34,12 +35,14 @@ export default class Test_filter extends React.Component{
             FilterEnum:"all",
             FilterAsyncEnum:-1,
             FilterModel:"all",
+            FilterAsyncModel:"-1",
         }
 
         const fields = [
             "FilterEnum",
             "FilterAsyncEnum",
             "FilterModel",
+            "FilterAsyncModel",
         ];
 
         fields.forEach((field)=>{
@@ -67,14 +70,14 @@ export default class Test_filter extends React.Component{
                 labelfield:"name",
                 allvalue:"all",
                 alllabel:"全部",
-                // v-model="filter_model"
-                // valuefield='id'
-                // labelfield='name'
-                // allvalue="all"
-                // alllabel="全部"
-                // :candidate="filter_model_candidate"
             },
-
+            FilterAsyncModel:{
+                getCandidate:this.getAsyncCandidate.bind(this,filter_model_candidate),
+                allvalue:"-1",
+                alllabel:"不限8",
+                labelfield:"name",
+                valuefield:"id",
+            },
 
         };
 
@@ -119,6 +122,7 @@ export default class Test_filter extends React.Component{
                     {this.renderField('FilterEnum')}
                     {this.renderField('FilterAsyncEnum')}
                     {this.renderField('FilterModel')}
+                    {this.renderField("FilterAsyncModel")}
                 </React.Fragment>
             </TestTable>
         );
