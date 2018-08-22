@@ -3,34 +3,29 @@ import {
     Radio
 } from "element-react";
 
-import RadioItems from "./_radioItems"
+import withFieldEnum from "./_withFieldEnum"
 
-import propsModelMixin from "./_propsModelMixin"
-import propsLabelValueMixin from "./_propsLabelValueMixin";
-import propsCandidateMixin from "./_propsCandidateMixin";
-
-export default class FieldEnumRadio extends React.Component{
-
-    render(){
-
-        const {
-            candidate,
-            valuefield,
-            labelfield,
-            ...restProps,
-        } = this.props;
-
+function RadioItems({candidate,valuefield,labelfield}){
+    return candidate.map((item)=>{
         return (
-            <Radio.Group
-                {...restProps}
+            <Radio
+                key={item[valuefield]}
+                value={item[valuefield]}
             >
-                {RadioItems({candidate,valuefield,labelfield})}
-            </Radio.Group>
+                {item[labelfield]}
+            </Radio>
         );
-    }
+    })
 }
 
+function renderFunc(candidate,valuefield,labelfield,restProps){
+    return (
+        <Radio.Group
+            {...restProps}
+        >
+            {RadioItems({candidate,valuefield,labelfield})}
+        </Radio.Group>
+    )
+}
 
-propsModelMixin(FieldEnumRadio);
-propsLabelValueMixin(FieldEnumRadio);
-propsCandidateMixin(FieldEnumRadio);
+export default withFieldEnum(renderFunc);
