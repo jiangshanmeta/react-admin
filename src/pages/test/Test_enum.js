@@ -56,7 +56,7 @@ export default class Test_enum extends React.Component{
         this.state = {
             FieldEnumRadio:0,
             FieldEnumSelect:1,
-            FieldModel:0,
+            FieldModel:1,
             FieldAsyncEnumRadio:1,
             FieldAsyncEnumSelect:2,
             FieldAsyncModel:6,
