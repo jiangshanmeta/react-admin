@@ -106,20 +106,18 @@ export default class Editor extends React.Component{
         this.editorComponents = {};
 
         this.onChangeMap = {};
+        this.$refs = {};
+        this.recordUnwatchs = [];
 
         reaction(()=>{
-            return {
-                record:this.props.record
-            }
+            return this.props.record;
         },this.recordChangeHandler,{
             fireImmediately:true,
         });
 
 
         reaction(()=>{
-            return {
-                field:this.props.fields,
-            }
+            return this.props.fields;
         },this.fieldsChangeHandler,{
             fireImmediately:true,
         });
@@ -140,10 +138,65 @@ export default class Editor extends React.Component{
         this.editorComponentsInjected = false;
         this.injectLabelComponents();
         this.injectEditorComponents();
+
+        this.$refs = {};
+        this._setRefMap = this.fieldsPlain.reduce((obj,field)=>{
+            obj[field] = this.setRef.bind(this,field)
+            return obj;
+        },{});
+
+        this.resetRelates();
+    }
+
+    resetRelates(){
+        this.recordUnwatchs.forEach((unwatch)=>{
+            unwatch();
+        });
+        this.recordUnwatchs = [];
+
+
+        this.fieldsPlain.forEach((field)=>{
+            const editorComponent = this.props.fieldList[field].editorComponent;
+            if(!editorComponent.config || !editorComponent.config.relates){
+                return;
+            }
+            const relates = editorComponent.config.relates;
+            relates.forEach((relateItem)=>{
+                if(typeof relateItem.handler !== 'function'){
+                    return;
+                }
+                const callback = function(newVal){
+                    if(this.$refs[field]){
+                        relateItem.handler.call(this.$refs[field],newVal);
+                    }else{
+                        setTimeout(()=>{
+                            callback.call(this,newVal);
+                        },0);
+                    }
+                };
+
+                const unwatch = reaction(()=>{
+                    // support multi and mono relate field
+                    if(Array.isArray(relateItem.relateField)){
+                        return relateItem.relateField.reduce((obj,relateField)=>{
+                            obj[relateField] = this.record[relateField];
+                            return obj;
+                        },{});
+                    }else{
+                        return this.record[relateItem.relateField];
+                    }
+                },callback.bind(this),relateItem.config)
+
+                this.recordUnwatchs.push(unwatch);
+
+            });
+
+        });
     }
 
     @action
     recordChangeHandler = ()=>{
+        this.resetRelates();
         this.record = JSON.parse(JSON.stringify(this.props.record));
     }
 
@@ -190,6 +243,7 @@ export default class Editor extends React.Component{
         const config = Object.assign({},defaultConfig,modeConfig);
         return (
             <Component
+                ref={this._setRefMap[field]}
                 value={this.record[field]}
                 onChange={this.onChangeMap[field]}
                 {...config}

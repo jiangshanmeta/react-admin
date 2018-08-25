@@ -44,11 +44,11 @@ export default{
                             handler(info){
                                 console.log(info)
                                 if(info.customername === 'lelouch' && info.address === 'area11'){
-                                    this.$emit('input',0);
+                                    this.props.onChange(0);
                                 }
                             },
                             config:{
-                                immediate:true,
+                                fireImmediately:true,
                             },
                         }
                     ],
@@ -125,7 +125,7 @@ export default{
     staticOperators:[
         {
             name:"create",
-            // component:()=>import("@/components/common/staticOperators/create").then((rst)=>rst.default),
+            component:()=>import("@/components/common/staticOpetators/Create").then((rst)=>rst.default),
             config:{
                 getCreateFields:getCreateFields,
                 doCreateRequest:createBook,
