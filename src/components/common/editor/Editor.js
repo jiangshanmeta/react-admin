@@ -115,12 +115,21 @@ export default class Editor extends React.Component{
             fireImmediately:true,
         });
 
-
         reaction(()=>{
             return this.props.fields;
         },this.fieldsChangeHandler,{
             fireImmediately:true,
         });
+
+        reaction(()=>{
+            return {
+                record:this.props.record,
+                fields:this.props.fields,
+            }
+        },this.resetRelates,{
+            fireImmediately:true,
+        });
+
     }
 
     onChange(field,value){
@@ -145,15 +154,13 @@ export default class Editor extends React.Component{
             return obj;
         },{});
 
-        this.resetRelates();
     }
 
-    resetRelates(){
+    resetRelates = ()=>{
         this.recordUnwatchs.forEach((unwatch)=>{
             unwatch();
         });
         this.recordUnwatchs = [];
-
 
         this.fieldsPlain.forEach((field)=>{
             const editorComponent = this.props.fieldList[field].editorComponent;
@@ -196,7 +203,6 @@ export default class Editor extends React.Component{
 
     @action
     recordChangeHandler = ()=>{
-        this.resetRelates();
         this.record = JSON.parse(JSON.stringify(this.props.record));
     }
 
