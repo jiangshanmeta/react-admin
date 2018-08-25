@@ -157,7 +157,7 @@ export default class Editor extends React.Component{
 
         this.fieldsPlain.forEach((field)=>{
             const editorComponent = this.props.fieldList[field].editorComponent;
-            if(!editorComponent.config || !editorComponent.config.relates){
+            if(!editorComponent || !editorComponent.config || !editorComponent.config.relates){
                 return;
             }
             const relates = editorComponent.config.relates;
