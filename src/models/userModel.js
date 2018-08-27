@@ -255,7 +255,6 @@ export default{
             label:"自定义filter",
             field:"test",
             editorComponent:{
-                name:"TestCustomFilter",
                 config:{
                     msg:"测试自定义filter",
                     relates:[

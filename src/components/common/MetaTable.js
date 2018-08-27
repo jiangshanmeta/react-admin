@@ -82,8 +82,6 @@ export default class MetaTable extends React.Component{
     }
 
     render(){
-        // return (<div>2222</div>)
-
         return (
             <table className="table">
                 <tbody>
