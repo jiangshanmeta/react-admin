@@ -38,6 +38,7 @@ function withAsyncCandidate(Component){
 
             return (
                 <Component
+                    isCandidateValid={!this.state.isRequest}
                     candidate={this.state.candidate}
                     {...restProps}
                 />

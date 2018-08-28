@@ -54,10 +54,10 @@ export default class Test_enum extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            FieldEnumRadio:0,
+            FieldEnumRadio:100,
             FieldEnumSelect:1,
             FieldModel:1,
-            FieldAsyncEnumRadio:1,
+            FieldAsyncEnumRadio:100,
             FieldAsyncEnumSelect:2,
             FieldAsyncModel:6,
         }
@@ -79,6 +79,9 @@ export default class Test_enum extends React.Component{
         this.config = {
             FieldEnumRadio:{
                 candidate:FieldEnumRadioCandidate,
+                handleInvalidValue(value,setvalue){
+                    this.props.onChange(setvalue[setvalue.length-1]);
+                },
             },
             FieldEnumSelect:{
                 candidate:FieldEnumSelectCandidate,
@@ -88,6 +91,10 @@ export default class Test_enum extends React.Component{
             },
             FieldAsyncEnumRadio:{
                 getCandidate:this.getAsyncCandidate.bind(null,FieldEnumRadioCandidate),
+                handleInvalidValue(value,setvalue){
+                    console.log(value,setvalue);
+                    this.props.onChange(setvalue[0]);
+                },
             },
             FieldAsyncEnumSelect:{
                 getCandidate:this.getAsyncCandidate.bind(null,FieldEnumSelectCandidate),
