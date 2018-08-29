@@ -28,6 +28,7 @@ const defaultEditorComponent = {
     FieldText:()=>import("./FieldText").then(rst=>rst.default),
     FieldNumber:()=>import("./FieldNumber").then(rst=>rst.default),
     FieldInt:()=>import("./FieldInt").then(rst=>rst.default),
+    FieldTextRich:()=>import("./FieldTextRich").then(rst=>rst.default),
 
     FieldEnumRadio:()=>import("./FieldEnumRadio").then(rst=>rst.default),
     FieldEnumSelect:()=>import("./FieldEnumSelect").then(rst=>rst.default),

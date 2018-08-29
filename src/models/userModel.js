@@ -156,9 +156,8 @@ export default{
         desc:{
             label:"备注",
             editorComponent:{
-                name:"FieldText",
                 // TDOD 
-                // name:"field_text_rich",
+                name:"FieldTextRich",
                 default:"这是富文本编辑器蛤",
             },
             view:{
