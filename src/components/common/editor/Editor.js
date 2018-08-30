@@ -245,16 +245,22 @@ export default class Editor extends React.Component{
 
     renderField = ({field})=>{
         const Component = this.editorComponents[field];
-        const defaultConfig = this.props.fieldList[field].editorComponent.config || {};
-        const modeConfig = this.props.fieldList[field].editorComponent[`${this.props.mode}Config`] || {};
+        const fieldConfig = this.props.fieldList[field];
+
+        const defaultConfig = fieldConfig.editorComponent.config || {};
+        const modeConfig = fieldConfig.editorComponent[`${this.props.mode}Config`] || {};
         const config = Object.assign({},defaultConfig,modeConfig);
+        const tip = fieldConfig.tip;
         return (
-            <Component
-                ref={this._setRefMap[field]}
-                value={this.record[field]}
-                onChange={this.onChangeMap[field]}
-                {...config}
-            />
+            <React.Fragment>
+                <Component
+                    ref={this._setRefMap[field]}
+                    value={this.record[field]}
+                    onChange={this.onChangeMap[field]}
+                    {...config}
+                />
+                {tip && <div className="form-helper">{tip}</div>}
+            </React.Fragment>
         )
     }
 

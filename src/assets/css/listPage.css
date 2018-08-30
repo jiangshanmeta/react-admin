@@ -10,3 +10,11 @@
 .operator-container>:first-child~*{
     margin-left:10px;
 }
+
+.form-helper{
+    margin-top:5px;
+    margin-bottom:5px;
+    color:#737373;
+    font-size:12px;
+    line-height:1.42;
+}
