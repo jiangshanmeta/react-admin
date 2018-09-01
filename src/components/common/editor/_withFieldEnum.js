@@ -3,11 +3,8 @@ import PropTypes from "prop-types";
 
 
 import {
-    observable,
     computed,
     reaction,
-    action,
-    toJS,
 } from "mobx"
 
 import {

@@ -3,14 +3,22 @@ import {
     Checkbox,
 } from "element-react";
 
-import CheckboxItems from "./_checkboxItems"
+import withFieldArray from "./_withFieldArray"
 
-import propsModelMixin from "./_propsModelMixin";
-import propsValueArrayMixin from "./_propsValueArrayMixin";
-import propsLabelValueMixin from "./_propsLabelValueMixin";
-import propsCandidateMixin from "./_propsCandidateMixin";
+function CheckboxItems({candidate,valuefield,labelfield}){
+    return candidate.map((item)=>{
+        return (
+            <Checkbox
+                value={item[valuefield]}
+                key={item[valuefield]}
+            >
+                {item[labelfield]}
+            </Checkbox>
+        );
+    });
+}
 
-export default class FieldTag extends React.Component{
+class BetterCheckbox extends React.PureComponent{
     handleChange = (value)=>{
         this.props.onChange(value.slice());
     }
@@ -18,9 +26,9 @@ export default class FieldTag extends React.Component{
     render(){
         const {
             candidate,
-            labelfield,
             valuefield,
-            ...restProps,
+            labelfield,
+            ...restProps
         } = this.props;
 
         delete restProps.onChange;
@@ -36,8 +44,15 @@ export default class FieldTag extends React.Component{
     }
 }
 
+function renderFunc(candidate,valuefield,labelfield,restProps){
+    return (
+        <BetterCheckbox
+            candidate={candidate}
+            valuefield={valuefield}
+            labelfield={labelfield}
+            {...restProps}
+        />
+    )
+}
 
-propsModelMixin(FieldTag);
-propsValueArrayMixin(FieldTag);
-propsLabelValueMixin(FieldTag);
-propsCandidateMixin(FieldTag);
+export default withFieldArray(renderFunc);
