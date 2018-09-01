@@ -61,8 +61,9 @@ export default class Test_tag extends React.Component{
                 candidate:FieldTagCandidate,
                 labelfield:"name",
                 valuefield:"id",
-                handleInvalidValue(value){
-                    console.log(value);
+                handleInvalidValue(){
+                    console.log("fieldtag invalid");
+                    this.props.onChange([]);
                 }
             },
             FieldArrayModel:{
