@@ -1,7 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
-
-
 import {
     computed,
     reaction,
@@ -15,8 +12,7 @@ import {
 import propsModelMixin from "./_propsModelMixin"
 import propsLabelValueMixin from "./_propsLabelValueMixin";
 import propsCandidateMixin from "./_propsCandidateMixin";
-
-function noop(){}
+import validateOptionMixin from "./_validateOptionMixin";
 
 
 export default function withFieldEnum(renderFunc){
@@ -67,19 +63,10 @@ export default function withFieldEnum(renderFunc){
         }
     }
 
-    FieldEnum.propTypes = {
-        isCandidateValid:PropTypes.bool,
-        handleInvalidValue:PropTypes.func,
-    };
-
-    FieldEnum.defaultProps = {
-        isCandidateValid:true,
-        handleInvalidValue:noop,
-    };
-
     propsModelMixin(FieldEnum);
     propsLabelValueMixin(FieldEnum);
     propsCandidateMixin(FieldEnum);
+    validateOptionMixin(FieldEnum);
 
     return FieldEnum;
 }

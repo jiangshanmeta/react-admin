@@ -38,7 +38,7 @@ export default class Test_tag extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            FieldTag:[2],
+            FieldTag:[2,2],
             FieldArrayModel:[2],
             FieldAsyncTag:[2],
             FieldAsyncArrayModel:[2],
@@ -61,6 +61,9 @@ export default class Test_tag extends React.Component{
                 candidate:FieldTagCandidate,
                 labelfield:"name",
                 valuefield:"id",
+                handleInvalidValue(value){
+                    console.log(value);
+                }
             },
             FieldArrayModel:{
                 candidate:FieldArrayModelCandidate,
