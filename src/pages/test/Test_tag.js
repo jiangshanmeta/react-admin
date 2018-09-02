@@ -5,6 +5,8 @@ import FieldArrayModel from "@/components/common/editor/FieldArrayModel"
 import FieldAsyncTag from "@/components/common/editor/FieldAsyncTag"
 import FieldAsyncArrayModel from "@/components/common/editor/FieldAsyncArrayModel"
 
+import FieldTagJSON from "@/components/common/editor/FieldTagJSON"
+
 import TestTable from "./_testTable"
 
 const Components = {
@@ -12,6 +14,7 @@ const Components = {
     FieldArrayModel,
     FieldAsyncTag,
     FieldAsyncArrayModel,
+    FieldTagJSON,
 }
 
 
@@ -42,6 +45,7 @@ export default class Test_tag extends React.Component{
             FieldArrayModel:[2],
             FieldAsyncTag:[2],
             FieldAsyncArrayModel:[2],
+            FieldTagJSON:[2,2],
         };
 
         const fields = [
@@ -49,6 +53,7 @@ export default class Test_tag extends React.Component{
             "FieldArrayModel",
             "FieldAsyncTag",
             "FieldAsyncArrayModel",
+            "FieldTagJSON",
         ];
 
         fields.forEach((field)=>{
@@ -80,6 +85,15 @@ export default class Test_tag extends React.Component{
                 getCandidate:this.getAsyncCandidate.bind(null,FieldArrayModelCandidate),
                 labelfield:"name",
                 valuefield:"id",
+            },
+            FieldTagJSON:{
+                candidate:FieldTagCandidate,
+                labelfield:"name",
+                valuefield:"id",
+                // handleInvalidValue(){
+                //     console.log("fieldtag invalid");
+                //     this.props.onChange([]);
+                // }
             },
         }
     
@@ -125,6 +139,7 @@ export default class Test_tag extends React.Component{
                     {this.renderField('FieldArrayModel')}
                     {this.renderField('FieldAsyncTag')}
                     {this.renderField('FieldAsyncArrayModel')}
+                    {this.renderField('FieldTagJSON')}
                 </React.Fragment>
             </TestTable>
         )
