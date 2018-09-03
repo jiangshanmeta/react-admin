@@ -41,7 +41,10 @@ const defaultEditorComponent = {
     FieldArrayModel:()=>import("./FieldArrayModel").then(rst=>rst.default),
     FieldAsyncTag:()=>import("./FieldAsyncTag").then(rst=>rst.default),
     FieldAsyncArrayModel:()=>import("./FieldAsyncArrayModel").then(rst=>rst.default),
-
+    FieldTagJSON:()=>import("./FieldTagJSON").then(rst=>rst.default),
+    FieldArrayModelJSON:()=>import("./FieldArrayModelJSON").then(rst=>rst.default),
+    FieldAsyncTagJSON:()=>import("./FieldAsyncTagJSON").then(rst=>rst.default),
+    FieldAsyncArrayModelJSON:()=>import("./FieldAsyncArrayModelJSON").then(rst=>rst.default),
 };
 
 
