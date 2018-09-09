@@ -1,24 +1,42 @@
 import React from "react";
 import {
     Select
-} from "element-react";
-
-import SelectItems from "./_selectItems"
+} from "antd";
 
 import withFieldEnum from "./_withFieldEnum"
 
-function renderFunc(candidate,valuefield,labelfield,restProps){
+const Option = Select.Option;
+
+function SelectOptions({candidate,valuefield,labelfield}){
+    return candidate.map((item)=>{
+        return (
+            <Option
+                key={item[valuefield]}
+                value={item[valuefield]}
+            >
+                {item[labelfield]}
+            </Option>
+        )
+    });
+}
+
+
+function FieldEnumSelectRenderComponent(props){
+    const {
+        candidate,
+        valuefield,
+        labelfield,
+        ...restProps,
+    } = props;
+
     return (
         <Select
             {...restProps}
         >
-            <SelectItems
-                candidate={candidate}
-                valuefield={valuefield}
-                labelfield={labelfield}
-            />
+            {SelectOptions({candidate,valuefield,labelfield})}
         </Select>
     )
 }
 
-export default withFieldEnum(renderFunc);
+
+export default withFieldEnum(FieldEnumSelectRenderComponent);

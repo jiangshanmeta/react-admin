@@ -33,18 +33,18 @@ const FieldEnumSelectCandidate = [
 ];
 
 const FieldModelCandidate = [
-    {label:"itemA",value:0},
-    {label:"itemB",value:1},
-    {label:"itemC",value:2},
-    {label:"itemD",value:3},
-    {label:"itemE",value:4},
-    {label:"itemF",value:5},
-    {label:"itemG",value:6},
-    {label:"itemH",value:7},
-    {label:"itemI",value:8},
-    {label:"itemJ",value:9},
-    {label:"itemK",value:10},
-    {label:"itemL",value:11},
+    {label:"itemA",value:10},
+    {label:"itemB",value:11},
+    {label:"itemC",value:12},
+    {label:"itemD",value:13},
+    {label:"itemE",value:14},
+    {label:"itemF",value:15},
+    {label:"itemG",value:16},
+    {label:"itemH",value:17},
+    {label:"itemI",value:18},
+    {label:"itemJ",value:19},
+    {label:"itemK",value:20},
+    {label:"itemL",value:21},
 ];
 
 
@@ -56,10 +56,10 @@ export default class Test_enum extends React.Component{
         this.state = {
             FieldEnumRadio:100,
             FieldEnumSelect:1,
-            FieldModel:1,
+            FieldModel:11,
             FieldAsyncEnumRadio:100,
             FieldAsyncEnumSelect:2,
-            FieldAsyncModel:6,
+            FieldAsyncModel:16,
         }
 
         const fields = [
@@ -123,7 +123,7 @@ export default class Test_enum extends React.Component{
         return (
             <tr>
                 <td>{Field}</td>
-                <td>{this.state[Field]}</td>
+                <td>{this.state[Field]} || {typeof this.state[Field]}</td>
                 <td>
                     <FieldComponent
                         value={this.state[Field]}

@@ -1,6 +1,6 @@
 export default{
     label:"订单",
-    icon:"el-icon-setting",
+    icon:"shopping-cart",
     name:"book",
     pages:[
         {

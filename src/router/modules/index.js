@@ -1,6 +1,6 @@
 export default {
     label:"首页",
-    icon:"el-icon-menu",
+    icon:"setting",
     name:"index",
     pages:[
         {

@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 import {
     Button,
-    Dialog,
-} from "element-react";
+    Modal,
+} from "antd"
 
 import {
     logError,
+    handleNonFuncProp,
 } from "@/widget/utility"
 
 import {
@@ -142,34 +144,35 @@ export default class Info extends React.Component{
             return null;
         }
         return (
-            <Dialog
+            <Modal
                 visible={this.state.dialogVisible}
                 onCancel={this.closeDialog}
+                footer={null}
                 {...this.props.dialogConfig}
             >
                 {this.componentsInjected &&
-                <Dialog.Body>
-                    <MetaTable
-                        fieldList={this.props.fieldList}
-                        fields={this.fields}
-                        renderLabel={this.renderLabel}
-                        renderField={this.renderField}
-                        mode="info"
-                    ></MetaTable>
-                </Dialog.Body>
+                <MetaTable
+                    fieldList={this.props.fieldList}
+                    fields={this.fields}
+                    renderLabel={this.renderLabel}
+                    renderField={this.renderField}
+                    mode="info"
+                ></MetaTable>
                 }
-            </Dialog>
+            </Modal>
         )
     }
 
     render(){
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+
         return (
             <div>
                 <Button
                     onClick={this.handleClick}
-                    {...this.props.triggerConfig}
+                    {...triggerConfig}
                 >
-                    {this.props.triggerConfig.text}
+                    {triggerConfig.text}
                 </Button>
                 {this.renderDialog()}
             </div>
@@ -181,11 +184,22 @@ Info.propTypes = {
     fieldList:PropTypes.object.isRequired,
     data:PropTypes.object.isRequired,
     getDetailInfo:PropTypes.func.isRequired,
-    triggerConfig:PropTypes.object,
-    dialogConfig:PropTypes.object,
+    triggerConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
+    dialogConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
 }
 
 Info.defaultProps = {
-    triggerConfig:{},
-    dialogConfig:{},
+    triggerConfig:{
+        text:"详情",
+        type:"primary",
+    },
+    dialogConfig:{
+        title:"用户详情",
+    },
 }

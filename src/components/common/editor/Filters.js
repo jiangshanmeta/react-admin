@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {
     Form,
     Button,
-} from "element-react";
+} from "antd";
 
 import {
     observable,
@@ -158,7 +158,7 @@ export default class Filters extends React.Component{
         }
 
         return (
-            <Form inline={true}>
+            <Form layout="inline">
                 {this.props.filters.map((item)=>{
                     const editorComponent = item.editorComponent;
                     const Component = this.filterComponents[item.field];
@@ -177,7 +177,7 @@ export default class Filters extends React.Component{
                 })}
 
                 <Form.Item>
-                    <section style={{display:'flex',alignItems:'flex-start',fontSize:0}}>
+                    <section style={{display:'flex',fontSize:0,alignItems:'bottom'}}>
                         <Button
                             type="primary"
                             onClick={this.search}

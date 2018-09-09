@@ -1,6 +1,6 @@
 export default{
     label:"测试",
-    icon:"el-icon-menu",
+    icon:"tool",
     name:"test",
     pages:[
         {

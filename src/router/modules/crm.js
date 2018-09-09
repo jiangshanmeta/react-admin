@@ -1,6 +1,6 @@
 export default{
     label:"客户",
-    icon:'el-icon-share',
+    icon:'user',
     name:"crm",
     pages:[
         {

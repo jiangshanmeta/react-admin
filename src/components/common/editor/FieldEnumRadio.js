@@ -1,7 +1,7 @@
 import React from 'react'
 import {
     Radio
-} from "element-react";
+} from "antd";
 
 import withFieldEnum from "./_withFieldEnum"
 
@@ -18,14 +18,32 @@ function RadioItems({candidate,valuefield,labelfield}){
     })
 }
 
-function renderFunc(candidate,valuefield,labelfield,restProps){
-    return (
-        <Radio.Group
-            {...restProps}
-        >
-            {RadioItems({candidate,valuefield,labelfield})}
-        </Radio.Group>
-    )
+class FieldEnumRadioRenderComponent extends React.PureComponent{
+    handleChange = (e)=>{
+        const value = e.target.value;
+        this.props.onChange(value);
+    }
+
+    render(){
+        const {
+            candidate,
+            valuefield,
+            labelfield,
+            ...restProps,
+        } = this.props;
+
+        return (
+            <Radio.Group
+                {...restProps}
+                onChange={this.handleChange}
+            >
+                {RadioItems({candidate,valuefield,labelfield})}
+            </Radio.Group>
+        )
+    }
 }
 
-export default withFieldEnum(renderFunc);
+
+
+
+export default withFieldEnum(FieldEnumRadioRenderComponent);

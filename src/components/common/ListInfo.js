@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from "prop-types";
+
 import {
     Table,
-    Pagination,
-} from "element-react";
+    Pagination
+} from "antd"
+
 
 import {observable,computed,reaction,action,toJS} from "mobx";
 import {observer} from 'mobx-react'
@@ -31,12 +33,6 @@ export default class ListInfo extends React.Component{
     @observable pageSize = 20;
     @observable multipleSelection = [];
 
-    @computed get defaultSort(){
-        return {
-            prop:this.sortField,
-            order:this.sortOrder,
-        }
-    }
 
     get _formData(){
         return this.$refs.filters && this.$refs.filters.formData;
@@ -46,11 +42,6 @@ export default class ListInfo extends React.Component{
         super(props);
 
         this.operatorMinWidth = 0;
-
-        if(props.defaultSort){
-            this.sortField = props.defaultSort.prop;
-            this.sortOrder = props.defaultSort.order;
-        }
 
         this.pageSize = props.pageSize;
 
@@ -86,6 +77,7 @@ export default class ListInfo extends React.Component{
         });
 
         this._cacheColumns = null;
+        this._rowSelection = null;
         this._injectViewComponents();
         this.getListInfo();
     }
@@ -95,8 +87,8 @@ export default class ListInfo extends React.Component{
     }
 
     @action
-    _handleSortChange = ({prop,order})=>{
-        this.sortField = prop;
+    _handleSortChange = ({field,order})=>{
+        this.sortField = field;
         this.sortOrder = order;
         this.pageIndex = 1;
     }
@@ -107,7 +99,8 @@ export default class ListInfo extends React.Component{
     }
 
     @action
-    _handleSizeChange = (pageSize)=>{
+    _handleSizeChange = (pageIndex,pageSize)=>{
+        this.pageIndex = pageIndex;
         this.pageSize = pageSize;
     }
 
@@ -163,10 +156,12 @@ export default class ListInfo extends React.Component{
 
         this._fieldTableColumnMap = Object.keys(fieldList).reduce((obj,field)=>{
             obj[field] = Object.assign({
-                prop:field,
-                label:fieldList[field].label,
-                sortable:this.props.sortFields.includes(field)?'custom':false,
-                render:(data)=>{
+                key:field,
+                dataIndex:field,
+                title:fieldList[field].label,
+                sorter:this.props.sortFields.includes(field),
+                // sortable:this.props.sortFields.includes(field)?'custom':false,
+                render:(fieldValue,data)=>{
                     return (
                         <Views
                             data={data}
@@ -197,42 +192,38 @@ export default class ListInfo extends React.Component{
 
     }
 
-
-    _setOperatorWidth = (width)=>{
-        if(width>this.operatorMinWidth){
-            this.operatorMinWidth = width;
-            this._setCacheColumns();
-            this.forceUpdate();
-        }
-    }
-
     _setCacheColumns(){
         const columns = this.state.fields.map((field)=>this._fieldTableColumnMap[field]);
 
         if(this.props.selection){
-            columns.unshift({
-                type:'selection',
-            });
+            const onChange = (selectedRowKeys, selectedRows)=>{
+                this._handleSelectChange(selectedRows);
+            };
+            this._rowSelection = {
+                onChange,
+            }
         }
 
         if(this.props.operators.length){
             columns.push({
-                label:this.props.operatorsLabel,
-                minWidth:this.operatorMinWidth,
-                render:(data)=>{
+                title:this.props.operatorsLabel,
+                render:(fieldValue,data)=>{
                     return (
                         <Operators
                             data={data}
                             fieldList={this.props.fieldList}
                             operators={this.props.operators}
                             onUpdate={this.getListInfo}
-                            setOperatorWidth={this._setOperatorWidth}
                         />
                     )
                 },
             });
         }
         this._cacheColumns = columns;
+    }
+
+    _handleTableChange = (...args)=>{
+        this._handleSortChange(args[2]);
     }
 
     _renderTable(){
@@ -250,11 +241,12 @@ export default class ListInfo extends React.Component{
 
         return (
             <Table
+                rowKey={this.props.rowKey}
                 columns={this._cacheColumns}
-                data={this.state.data}
-                onSortChange={this._handleSortChange}
-                onSelectChange={this._handleSelectChange}
-                defaultSort={this.defaultSort}
+                dataSource={this.state.data}
+                rowSelection={this._rowSelection}
+
+                onChange={this._handleTableChange}
                 {...this.props.tableConfig}
             />
         )
@@ -276,11 +268,11 @@ export default class ListInfo extends React.Component{
 
         return (
             <Pagination
-                currentPage={this.pageIndex}
+                current={this.pageIndex}
                 pageSize={this.pageSize}
                 total={this.state.total}
-                onCurrentChange={this._handleCurrentChange}
-                onSizeChange={this._handleSizeChange}
+                onChange={this._handleCurrentChange}
+                onShowSizeChange={this._handleSizeChange}
                 {...this.props.paginationConfig}
             />
         )
@@ -325,7 +317,7 @@ ListInfo.propTypes = {
     afterFilters:PropTypes.func,
 
     // data
-    defaultSort:PropTypes.object,
+    rowKey:PropTypes.string,
     sortFieldReqName:PropTypes.string,
     sortOrderReqName:PropTypes.string,
     pageSize:PropTypes.number,
@@ -339,7 +331,7 @@ ListInfo.propTypes = {
     tableConfig:PropTypes.object,
     selection:PropTypes.bool,
     sortFields:PropTypes.array,
-
+    
     operators:PropTypes.array,
     operatorsLabel:PropTypes.string,
 
@@ -361,6 +353,7 @@ ListInfo.defaultProps = {
     afterFilters:renderNull,
 
     // data
+    rowKey:"id",
     defaultSort:null,
     sortFieldReqName:"sortField",
     sortOrderReqName:"sortOrder",

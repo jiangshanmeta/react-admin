@@ -19,8 +19,9 @@ import {
 import viewEnum from "@/components/common/views/viewEnum"
 
 import {
-    Message
-} from "element-react"
+    message
+} from "antd"
+
 
 setReactComponentFlag(viewEnum)
 
@@ -187,7 +188,7 @@ export default{
                 },
                 createBtnConfig:{
                     text:"确认创建",
-                    type:"success",
+                    type:"primary",
                 },
                 cancelBtnConfig:{
                     text:"取消",
@@ -283,8 +284,9 @@ export default{
         listRequest:getUserList,
         sortFields:['typ'],
         paginationConfig:{
-            layout:"total, sizes, prev, pager, next, jumper",
-            pageSizes:[2,10,20,50],
+            showQuickJumper:true,
+            showSizeChanger:true,
+            pageSizeOptions:['2','5','10'],
         },
         selection:true,
 
@@ -298,7 +300,6 @@ export default{
                 getDetailInfo:getUserDetail,
                 triggerConfig:{
                     text:"查看详情",
-                    size:"small",
                     type:"primary",
                 },
                 dialogConfig:{
@@ -314,31 +315,21 @@ export default{
                 doEditRequest:editUser,
                 autoValidate:false,
                 reserveFields:['id'],
-                triggerConfig:{
-                    text:"编辑",
-                    size:"small",
-                    type:"primary",
-                },
                 dialogConfig:{
-                    size:"large",
                     title:"编辑用户",
                 },
                 editBtnConfig:{
                     type:"primary",
                     text:"确定编辑",
                 },
-                cancelBtnConfig:{
-                    text:"取消",
-                },
             }
         },
         {
             handler(resolve,data){
-                Message({
-                    message:`${data.name}不要总想着搞个大新闻`,
-                    type:"success",
-                    duration:2000,
-                })
+                message.success(
+                    `${data.name}不要总想着搞个大新闻`,
+                    2,
+                )
 
                 setTimeout(()=>{
                     resolve();
@@ -346,8 +337,7 @@ export default{
             },
             triggerConfig:{
                 text:"搞个大新闻",
-                type:"warning",
-                size:"small",
+                type:"primary",
             },
         },
         {
@@ -358,7 +348,6 @@ export default{
                 triggerConfig:{
                     text:"删除用户",
                     type:"danger",
-                    size:"small",
                 },
             }
         },

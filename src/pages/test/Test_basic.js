@@ -50,7 +50,8 @@ export default class Test_basic extends React.Component{
                 placeholder:"测试FieldPwd",
             },
             FieldNumber:{
-
+                defaultValue:100,
+                invalidValue:15
             },
             FieldInt:{
 
@@ -83,7 +84,6 @@ export default class Test_basic extends React.Component{
             </tr>
         )
     }
-
 
     render(){
         return (

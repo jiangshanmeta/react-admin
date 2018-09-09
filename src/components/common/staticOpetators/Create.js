@@ -2,13 +2,14 @@ import React from "react"
 import PropTypes from "prop-types";
 import {
     Button,
-    Dialog,
-} from "element-react";
+    Modal,
+} from "antd"
 
 import Editor from "@/components/common/editor/Editor"
 
 import {
     logError,
+    handleNonFuncProp,
 } from "@/widget/utility"
 
 export default class Create extends React.Component{
@@ -81,53 +82,62 @@ export default class Create extends React.Component{
         }).catch(logError);
     }
 
+    _renderFooter(){
+        const cancelBtnConfig = handleNonFuncProp(this.props.cancelBtnConfig);
+        const createBtnConfig = handleNonFuncProp(this.props.createBtnConfig);
+
+        return (
+            <React.Fragment>
+                <Button
+                    {...cancelBtnConfig}
+                    onClick={this.closeDialog}
+                >
+                    {cancelBtnConfig.text}
+                </Button>
+                <Button
+                    {...createBtnConfig}
+                    onClick={this.doCreate}
+                >
+                    {createBtnConfig.text}
+                </Button>
+            </React.Fragment>
+        )
+    }
+
     renderDialog(){
         if(!this.canInitDialog){
             return null;
         }
 
         return (
-            <Dialog
+            <Modal
+                {...this.props.dialogConfig}
                 visible={this.state.dialogVisible}
                 onCancel={this.closeDialog}
-                {...this.props.dialogConfig}
+                footer={this._renderFooter()}
             >
-                <Dialog.Body>
-                    <Editor
-                        ref={this._setEditorRef}
-                        fieldList={this.props.fieldList}
-                        fields={this.fields}
-                        record={this.record}
-                        mode="create"
-                    ></Editor>
-                </Dialog.Body>
-                <Dialog.Footer>
-                    <Button
-                        onClick={this.closeDialog}
-                        {...this.props.cancelBtnConfig}
-                    >
-                        {this.props.cancelBtnConfig.text}
-                    </Button>
-                    <Button
-                        onClick={this.doCreate}
-                        {...this.props.createBtnConfig}
-                    >
-                        {this.props.createBtnConfig.text}
-                    </Button>
-                </Dialog.Footer>
-            </Dialog>
+                <Editor
+                    ref={this._setEditorRef}
+                    fieldList={this.props.fieldList}
+                    fields={this.fields}
+                    record={this.record}
+                    mode="create"
+                ></Editor>
+            </Modal>
         )
 
     }
 
     render(){
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+
         return (
             <div>
                 <Button
+                    {...triggerConfig}
                     onClick={this.handleClick}
-                    {...this.props.triggerConfig}
                 >
-                    {this.props.triggerConfig.text}
+                    {triggerConfig.text}
                 </Button>
                 {this.renderDialog()}
             </div>
@@ -137,10 +147,22 @@ export default class Create extends React.Component{
 
 Create.propTypes = {
     fieldList:PropTypes.object.isRequired,
-    triggerConfig:PropTypes.object,
-    dialogConfig:PropTypes.object,
-    createBtnConfig:PropTypes.object,
-    cancelBtnConfig:PropTypes.object,
+    triggerConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
+    dialogConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
+    createBtnConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
+    cancelBtnConfig:PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func,
+    ]),
 
     getCreateFields:PropTypes.func.isRequired,
     transformData:PropTypes.func,
@@ -148,10 +170,20 @@ Create.propTypes = {
 }
 
 Create.defaultProps = {
-    triggerConfig:{},
-    dialogConfig:{},
-    createBtnConfig:{},
-    cancelBtnConfig:{},
+    triggerConfig:{
+        text:"新建",
+        type:"primary",  
+    },
+    dialogConfig:{
+        title:"新建",
+    },
+    createBtnConfig:{
+        text:"确定",
+        type:"primary",
+    },
+    cancelBtnConfig:{
+        text:"取消",
+    },
     transformData:function(data){
         return data;
     }

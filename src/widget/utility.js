@@ -13,8 +13,13 @@ function enumArr2Hash(arr,label='label',value='value'){
     },{})
 }
 
+function handleNonFuncProp(prop,context){
+    return typeof prop === 'function'?prop.call(context):prop;
+}
+
 export {
     logError,
     identity,
     enumArr2Hash,
+    handleNonFuncProp,
 }

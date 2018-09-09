@@ -1,13 +1,13 @@
 import React from "react"
-
 import {
     Menu,
-} from "element-react"
+    Icon,
+} from "antd"
 
 import menu from "@/router/menu"
 
 export default class AppMenu extends React.Component{
-    handleSelect = (pathname)=>{
+    handleSelect = ({key:pathname})=>{
         this.props.history.push({
             pathname,
         })
@@ -19,7 +19,7 @@ export default class AppMenu extends React.Component{
                 <Menu.SubMenu
                     index={submenu.name}
                     key={submenu.name}
-                    title={<span><i className={submenu.icon}></i>{submenu.label}</span>}
+                    title={<span><Icon type={submenu.icon}/>{submenu.label}</span>}
                 >
                     {this.renderSubmenu(submenu.pages)}
                 </Menu.SubMenu>
@@ -43,6 +43,7 @@ export default class AppMenu extends React.Component{
     render(){
         return (
             <Menu
+                mode="inline"
                 onSelect={this.handleSelect}
                 id="app-menu"
             >

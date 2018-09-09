@@ -12,7 +12,7 @@ import {
 import validateOptionMixin from "./_validateOptionMixin";
 
 export default function withValidate(validateOption,propMixins){
-    return function(renderFunc){
+    return function(Component){
         @observer
         class ComponentWithValidate extends React.Component{
             constructor(props){
@@ -37,14 +37,11 @@ export default function withValidate(validateOption,propMixins){
             }
     
             render(){
-                const {
-                    candidate,
-                    valuefield,
-                    labelfield,
-                    ...restProps,
-                } = this.props;
-    
-                return renderFunc(candidate,valuefield,labelfield,restProps);
+                return (
+                    <Component
+                        {...this.props}
+                    />
+                )
             }
         }
         validateOptionMixin(ComponentWithValidate);

@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types";
 import {
     Button
-} from "element-react";
+} from "antd";
 
 import {
     injectComponents
@@ -39,7 +39,7 @@ export default class Operators extends React.Component{
 
     _importOperatorComponents(){
         if(!this._hasOperatorComponent){
-            return this.notifytWidth();
+            return;
         }
 
         const components = this.props.operators.filter((item)=>item.component)
@@ -48,30 +48,7 @@ export default class Operators extends React.Component{
             this.setState({
                 componentsInjected:true,
             });
-            this.notifytWidth();
         }).catch(logError);
-
-    }
-
-    _widthHandler = ()=>{
-        const setOperatorWidth = this.props.setOperatorWidth;
-        if(typeof setOperatorWidth === 'function'){
-            const width = this.$refs.operators.scrollWidth;
-            setOperatorWidth(width);
-        }
-    }
-
-    notifytWidth = ()=>{
-        // react 沒有vue的$nextTick?
-        if(this.props.operators.length){
-            setTimeout(()=>{
-                if(this.$refs.operators){
-                    this._widthHandler();
-                }else{
-                    setTimeout(this.notifytWidth,0);
-                }
-            },0);
-        }
     }
 
     handleOperatorTrigger = (handler)=>{

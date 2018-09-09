@@ -7,10 +7,9 @@ import {
 } from "@/server/book.js"
 
 import {
-    Message
-} from "element-react"
+    message
+} from "antd"
 
-// import {download} from "@/widget/utility.js"
 
 export default{
     fieldList:{
@@ -150,11 +149,11 @@ export default{
             handler(resolve){
                 console.log(this.props)
                 console.log(this.props.selectedData);
-                Message({
-                    message:`test`,
-                    type:"success",
-                    duration:2000
-                });
+
+                message.success(
+                    `test`,
+                    2
+                )
 
                 setTimeout(resolve,1000);
 
@@ -162,20 +161,6 @@ export default{
             triggerConfig:{
                 type:"danger",
                 text:"删除多项",
-            }
-        },
-        {
-            name:"csv",
-            // component:()=>import("@/components/common/staticOperators/csv").then((rst)=>rst.default),
-            config:{
-                triggerConfig:{
-                    text:"导入csv数据",
-                    type:"warning",
-                },
-                handleData:function(resolve,data){
-                    console.log(data);
-                    resolve();
-                }
             }
         },
     ],
@@ -208,11 +193,12 @@ export default{
     operators:[
         {
             handler(resolve,data){
-                Message({
-                    message:`${data.customername}再来一单`,
-                    type:"success",
-                    duration:2000
-                });
+
+                message.success(
+                    `${data.customername}再来一单`,
+                    2
+                )
+
                 setTimeout(()=>{
                     resolve();
                 },1000)
