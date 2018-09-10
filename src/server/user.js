@@ -121,9 +121,15 @@ function createUser(cb,data){
 
 
 function getUserList(cb,params){
-    let data = userTable;
+    const {
+        pageSize,
+        pageIndex
+    } = params;
+
+    const start = (pageIndex-1)*pageSize
+    let data = userTable.slice(start,start+pageSize);
     let fields = ["name","gender","typ"];
-    let total = data.length;
+    let total = userTable.length;
 
     cb({
         data,

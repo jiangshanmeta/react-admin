@@ -29,7 +29,7 @@ export default class Delete extends React.Component{
     }
 
     render(){
-        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig,this);
 
         return (
             <Button

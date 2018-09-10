@@ -282,15 +282,16 @@ export default{
     ],
     listConfig:{
         listRequest:getUserList,
-        sortFields:['typ'],
+        sortFields:['typ','name'],
         paginationConfig:{
             showQuickJumper:true,
             showSizeChanger:true,
             pageSizeOptions:['2','5','10'],
         },
         selection:true,
-
         pageSizes:[10,20,30,50],
+        defaultSortField:"typ",
+        defaultSortOrder:"ascend",
     },
     operators:[
         {

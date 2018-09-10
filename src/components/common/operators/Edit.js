@@ -68,8 +68,8 @@ export default class Edit extends React.Component{
     }
 
     _renderDialogFooter(){
-        const cancelBtnConfig = handleNonFuncProp(this.props.cancelBtnConfig);
-        const editBtnConfig = handleNonFuncProp(this.props.editBtnConfig);
+        const cancelBtnConfig = handleNonFuncProp(this.props.cancelBtnConfig,this);
+        const editBtnConfig = handleNonFuncProp(this.props.editBtnConfig,this);
         return (
             <React.Fragment>
                 <Button
@@ -113,7 +113,7 @@ export default class Edit extends React.Component{
     }
 
     render(){
-        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig,this);
         return (
             <div>
                 <Button

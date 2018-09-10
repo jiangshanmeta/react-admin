@@ -33,7 +33,6 @@ export default class ListInfo extends React.Component{
     @observable pageSize = 20;
     @observable multipleSelection = [];
 
-
     get _formData(){
         return this.$refs.filters && this.$refs.filters.formData;
     }
@@ -41,9 +40,11 @@ export default class ListInfo extends React.Component{
     constructor(props){
         super(props);
 
-        this.operatorMinWidth = 0;
-
         this.pageSize = props.pageSize;
+        if(this.props.defaultSortField && this.props.defaultSortOrder){
+            this.sortField = this.props.defaultSortField;
+            this.sortOrder = this.props.defaultSortOrder;
+        }
 
         reaction(()=>{
             return {
@@ -59,6 +60,7 @@ export default class ListInfo extends React.Component{
             data:[],
             fields:[],
             total:0,
+            loading:false,
         };
 
 
@@ -86,29 +88,11 @@ export default class ListInfo extends React.Component{
         this.$refs[refName] = refValue;
     }
 
-    @action
-    _handleSortChange = ({field,order})=>{
-        this.sortField = field;
-        this.sortOrder = order;
-        this.pageIndex = 1;
-    }
-
-    @action
-    _handleCurrentChange = (pageIndex)=>{
-        this.pageIndex = pageIndex;
-    }
-
-    @action
-    _handleSizeChange = (pageIndex,pageSize)=>{
-        this.pageIndex = pageIndex;
-        this.pageSize = pageSize;
-    }
 
     @action
     _handleSelectChange = (selection)=>{
         this.multipleSelection = selection;
     }
-
 
     getListInfo = ()=>{
         if(this.props.filters.length && !this.$refs.filters){
@@ -131,6 +115,9 @@ export default class ListInfo extends React.Component{
 
         console.log(params);
 
+        this.setState({
+            loading:true,
+        })
         return new Promise((resolve)=>{
             this.props.listRequest(resolve,this.props.transformRequestData(params))
         }).then((rst)=>{
@@ -145,6 +132,7 @@ export default class ListInfo extends React.Component{
                     fields,
                     total,
                     data,
+                    loading:false,
                 });
             });
 
@@ -160,7 +148,6 @@ export default class ListInfo extends React.Component{
                 dataIndex:field,
                 title:fieldList[field].label,
                 sorter:this.props.sortFields.includes(field),
-                // sortable:this.props.sortFields.includes(field)?'custom':false,
                 render:(fieldValue,data)=>{
                     return (
                         <Views
@@ -171,7 +158,10 @@ export default class ListInfo extends React.Component{
                         />
                     )
                 }
-            },fieldList[field].tableColumnConfig || {});
+            },
+            fieldList[field].tableColumnConfig || {},
+            this.props.defaultSortField === field?{defaultSortOrder:this.props.defaultSortOrder}:{}
+            );
             return obj;
         },{});
     }
@@ -222,8 +212,16 @@ export default class ListInfo extends React.Component{
         this._cacheColumns = columns;
     }
 
-    _handleTableChange = (...args)=>{
-        this._handleSortChange(args[2]);
+    @action
+    _handleTableChange = (pagination,filters,sorter)=>{
+        this.pageIndex = pagination.current;
+        this.pageSize = pagination.pageSize;
+
+        if(this.sortField !== sorter.field || this.sortOrder !== sorter.order){
+            this.pageIndex = 1;
+        }
+        this.sortField = sorter.field;
+        this.sortOrder = sorter.order;
     }
 
     _renderTable(){
@@ -239,41 +237,26 @@ export default class ListInfo extends React.Component{
             this._setCacheColumns();
         }
 
+        let paginationConfig = false;
+        if(this.props.paginated){
+            paginationConfig = {
+                ...this.props.paginationConfig,
+                current:this.pageIndex,
+                pageSize:this.pageSize,
+                total:this.state.total,
+            }
+        }
+
         return (
             <Table
                 rowKey={this.props.rowKey}
                 columns={this._cacheColumns}
                 dataSource={this.state.data}
                 rowSelection={this._rowSelection}
-
+                loading={this.state.loading}
+                pagination={paginationConfig}
                 onChange={this._handleTableChange}
                 {...this.props.tableConfig}
-            />
-        )
-    }
-
-    _renderEmptyDataTip(){
-        if(this.state.data.length){
-            return null;
-        }
-        return (
-            <section>{this.props.emptyText}</section>
-        )
-    }
-
-    _renderPagination(){
-        if(!this.props.paginated || this.state.data.length === 0){
-            return null;
-        }
-
-        return (
-            <Pagination
-                current={this.pageIndex}
-                pageSize={this.pageSize}
-                total={this.state.total}
-                onChange={this._handleCurrentChange}
-                onShowSizeChange={this._handleSizeChange}
-                {...this.props.paginationConfig}
             />
         )
     }
@@ -301,8 +284,6 @@ export default class ListInfo extends React.Component{
                 />
                 {this.props.afterFilters(beforeAfterFilterData)}
                 {this._renderTable()}
-                {this._renderEmptyDataTip()}
-                {this._renderPagination()}
             </section>
         )
     }
@@ -317,7 +298,10 @@ ListInfo.propTypes = {
     afterFilters:PropTypes.func,
 
     // data
-    rowKey:PropTypes.string,
+    rowKey:PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.func,
+    ]),
     sortFieldReqName:PropTypes.string,
     sortOrderReqName:PropTypes.string,
     pageSize:PropTypes.number,
@@ -331,6 +315,8 @@ ListInfo.propTypes = {
     tableConfig:PropTypes.object,
     selection:PropTypes.bool,
     sortFields:PropTypes.array,
+    defaultSortField:PropTypes.string,
+    defaultSortOrder:PropTypes.oneOf(['ascend','descend']),
     
     operators:PropTypes.array,
     operatorsLabel:PropTypes.string,
@@ -371,8 +357,6 @@ ListInfo.defaultProps = {
 
     operators:[],
     operatorsLabel:"操作",
-
-    emptyText:"暂无数据",
 
     // pagination
     paginated:true,

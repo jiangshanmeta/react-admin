@@ -164,7 +164,7 @@ export default class Info extends React.Component{
     }
 
     render(){
-        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig,this);
 
         return (
             <div>

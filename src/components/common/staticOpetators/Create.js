@@ -83,8 +83,8 @@ export default class Create extends React.Component{
     }
 
     _renderFooter(){
-        const cancelBtnConfig = handleNonFuncProp(this.props.cancelBtnConfig);
-        const createBtnConfig = handleNonFuncProp(this.props.createBtnConfig);
+        const cancelBtnConfig = handleNonFuncProp(this.props.cancelBtnConfig,this);
+        const createBtnConfig = handleNonFuncProp(this.props.createBtnConfig,this);
 
         return (
             <React.Fragment>
@@ -129,7 +129,7 @@ export default class Create extends React.Component{
     }
 
     render(){
-        const triggerConfig = handleNonFuncProp(this.props.triggerConfig);
+        const triggerConfig = handleNonFuncProp(this.props.triggerConfig,this);
 
         return (
             <div>
