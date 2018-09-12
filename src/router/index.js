@@ -21,7 +21,14 @@ const routes = menu.reduce((arr,{pages=[]})=>{
 },[]);
 
 
-
+// routes.push({
+//     path:"/index/login",
+//     exact:true,
+//     component:Loadable({
+//         loader:()=>import("@/pages/index/Login"),
+//         loading
+//     }),
+// })
 routes.push({
     component:page404
 })

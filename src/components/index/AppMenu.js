@@ -28,7 +28,7 @@ export default class AppMenu extends React.Component{
     }
 
     renderSubmenu(submenu){
-        return submenu.map((item)=>{
+        return submenu.filter((item)=>!item.menuHide).map((item)=>{
             return (
                 <Menu.Item
                     index={item.path}

@@ -9,6 +9,7 @@ export default{
             label:'客户列表',
             meta:{
                 model:"userModel",
+                privilege:[1]
             },
         },
 

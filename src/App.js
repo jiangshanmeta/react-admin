@@ -4,6 +4,7 @@ import {
     BrowserRouter as Router,
     Route,
     Switch,
+    Redirect,
 } from "react-router-dom"
 
 import AppHeader from "@/components/index/AppHeader"
@@ -12,8 +13,10 @@ import AppMenu from "@/components/index/AppMenu"
 import router from "./router"
 import "./App.css"
 
-export default class App extends React.Component {
+import LoginStore from "@/store/LoginStore"
 
+
+export default class App extends React.Component {
     renderRouter(){
         return (
             <Switch>
@@ -24,11 +27,29 @@ export default class App extends React.Component {
                             path={item.path}
                             exact={item.exact}
                             render={(props)=>{
+                                const {
+                                    meta={},
+                                } = item;
+                                const isLogin = LoginStore.isLogin;
+                                if(Array.isArray(meta.privilege) && !isLogin){
+                                    const redirectConfig = {
+                                        pathname:'/index/login',
+                                        state:{
+                                            from:item.path,
+                                        }
+                                    }
+                                    return (
+                                        <Redirect
+                                            to={redirectConfig}
+                                        />
+                                    )
+                                }
+                                const Component = item.component;
                                 return (
-                                    <item.component
+                                    <Component
                                         {...props}
                                         meta={item.meta}
-                                    ></item.component>
+                                    ></Component>
                                 )
                             }}
                         ></Route>

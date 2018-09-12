@@ -3,11 +3,15 @@ import PropTypes from "prop-types";
 
 import {
     Table,
-    Pagination
 } from "antd"
 
 
-import {observable,computed,reaction,action,toJS} from "mobx";
+import {
+    observable,
+    reaction,
+    action,
+    toJS
+} from "mobx";
 import {observer} from 'mobx-react'
 
 import Views from "@/components/common/views/Views"

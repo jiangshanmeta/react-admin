@@ -1,13 +1,27 @@
 import React from "react"
 import "./AppHeader.css"
 
-export default class AppHeader extends React.Component{
-    constructor(props){
-        super(props);
+import {
+    observer
+} from "mobx-react"
 
-        this.state = {
+import {
+    withRouter
+} from "react-router-dom"
 
-        }
+import LoginStore from "@/store/LoginStore"
+
+const logoutBtnStyle = {
+    position:"relative",
+    color:"#fff",
+    top:"8px",
+    cursor:"pointer",
+}
+
+@observer
+class AppHeader extends React.Component{
+    doLogout = ()=>{
+        LoginStore.doLogout(()=>this.props.history.push("/index/login"));
     }
 
     render(){
@@ -16,7 +30,16 @@ export default class AppHeader extends React.Component{
                 <div className="pull-left">
                     <div className="admin-header-title">管理系统</div>
                 </div>
+                {LoginStore.isLogin &&
+                <div className="pull-right">
+                    <span
+                        style={logoutBtnStyle}
+                        onClick={this.doLogout}
+                    >Logout</span>
+                </div>}
             </header>   
         )
     }
 }
+
+export default withRouter(AppHeader)

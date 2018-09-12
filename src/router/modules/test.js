@@ -25,8 +25,12 @@ export default{
             path:"/test/test_filter",
             label:"filter",
             component:()=>import("@/pages/test/Test_filter"),
-        }
-
+        },
+        {
+            path:"/test/test_mobx",
+            label:"mobx",
+            component:()=>import("@/pages/test/testMobx"),
+        },
 
     ],
 
