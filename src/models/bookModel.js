@@ -66,8 +66,17 @@ export default{
         address:{
             label:"收货地址",
             editorComponent:{
-                name:"FieldText",
+                component:()=>import("@/components/book/editor/BookAddress").then((rst)=>rst.default),
                 default:"",
+                config:{
+                    relates:[
+                        {
+                            relateField:"customername",
+                            propField:"customername",
+                        },
+                    ],
+
+                },
             },
         },
         store:{

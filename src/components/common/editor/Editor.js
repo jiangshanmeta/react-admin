@@ -160,6 +160,18 @@ export default class Editor extends React.Component{
 
     }
 
+    getRelateData(relateItem){
+        // support multi and mono relate field
+        if(Array.isArray(relateItem.relateField)){
+            return relateItem.relateField.reduce((obj,relateField)=>{
+                obj[relateField] = this.record[relateField];
+                return obj;
+            },{});
+        }else{
+            return this.record[relateItem.relateField];
+        }
+    }
+
     resetRelates = ()=>{
         this.recordUnwatchs.forEach((unwatch)=>{
             unwatch();
@@ -172,10 +184,8 @@ export default class Editor extends React.Component{
                 return;
             }
             const relates = editorComponent.config.relates;
-            relates.forEach((relateItem)=>{
-                if(typeof relateItem.handler !== 'function'){
-                    return;
-                }
+
+            relates.filter(item=>typeof item.handler === 'function').forEach((relateItem)=>{
                 const callback = function(newVal){
                     if(this.$refs[field]){
                         relateItem.handler.call(this.$refs[field],newVal);
@@ -187,15 +197,7 @@ export default class Editor extends React.Component{
                 };
 
                 const unwatch = reaction(()=>{
-                    // support multi and mono relate field
-                    if(Array.isArray(relateItem.relateField)){
-                        return relateItem.relateField.reduce((obj,relateField)=>{
-                            obj[relateField] = this.record[relateField];
-                            return obj;
-                        },{});
-                    }else{
-                        return this.record[relateItem.relateField];
-                    }
+                    return this.getRelateData(relateItem);
                 },callback.bind(this),relateItem.config)
 
                 this.recordUnwatchs.push(unwatch);
@@ -249,11 +251,22 @@ export default class Editor extends React.Component{
     renderField = ({field})=>{
         const Component = this.editorComponents[field];
         const fieldConfig = this.props.fieldList[field];
+        const editorConfigs = fieldConfig.editorComponent;
 
-        const defaultConfig = fieldConfig.editorComponent.config || {};
-        const modeConfig = fieldConfig.editorComponent[`${this.props.mode}Config`] || {};
+        const defaultConfig = editorConfigs.config || {};
+        const modeConfig = editorConfigs[`${this.props.mode}Config`] || {};
         const config = Object.assign({},defaultConfig,modeConfig);
         const tip = fieldConfig.tip;
+
+        const {
+            relates=[]
+        } = config;
+
+        const relateProps = relates.filter(item=>item.propField).reduce((obj,item)=>{
+            obj[item.propField] = this.getRelateData(item);
+            return obj;
+        },Object.create(null));
+
         return (
             <React.Fragment>
                 <Component
@@ -261,6 +274,7 @@ export default class Editor extends React.Component{
                     value={this.record[field]}
                     onChange={this.onChangeMap[field]}
                     {...config}
+                    {...relateProps}
                 />
                 {tip && <div className="form-helper">{tip}</div>}
             </React.Fragment>
