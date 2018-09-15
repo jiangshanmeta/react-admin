@@ -36,15 +36,26 @@ const defaultEditorComponent = {
     FieldAsyncEnumRadio:()=>import("./FieldAsyncEnumRadio").then(rst=>rst.default),
     FieldAsyncEnumSelect:()=>import("./FieldAsyncEnumSelect").then(rst=>rst.default),
     FieldAsyncModel:()=>import("./FieldAsyncModel").then(rst=>rst.default),
+    FieldRelatesEnumRadio:()=>import("./FieldRelatesEnumRadio").then(rst=>rst.default),
+    FieldRelatesEnumSelect:()=>import("./FieldRelatesEnumSelect").then(rst=>rst.default),
+    FieldRelatesModel:()=>import("./FieldRelatesModel").then(rst=>rst.default),
 
     FieldTag:()=>import("./FieldTag").then(rst=>rst.default),
     FieldArrayModel:()=>import("./FieldArrayModel").then(rst=>rst.default),
     FieldAsyncTag:()=>import("./FieldAsyncTag").then(rst=>rst.default),
     FieldAsyncArrayModel:()=>import("./FieldAsyncArrayModel").then(rst=>rst.default),
+    FieldRelatesTag:()=>import("./FieldRelatesTag").then(rst=>rst.default),
+    FieldRelatesArrayModel:()=>import("./FieldRelatesArrayModel").then(rst=>rst.default),
+
     FieldTagJSON:()=>import("./FieldTagJSON").then(rst=>rst.default),
     FieldArrayModelJSON:()=>import("./FieldArrayModelJSON").then(rst=>rst.default),
     FieldAsyncTagJSON:()=>import("./FieldAsyncTagJSON").then(rst=>rst.default),
     FieldAsyncArrayModelJSON:()=>import("./FieldAsyncArrayModelJSON").then(rst=>rst.default),
+    FieldRelatesTagJSON:()=>import("./FieldRelatesTagJSON").then(rst=>rst.default),
+    FieldRelatesArrayModelJSON:()=>import("./FieldRelatesArrayModelJSON").then(rst=>rst.default),
+
+
+
 };
 
 
