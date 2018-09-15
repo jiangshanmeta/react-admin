@@ -130,21 +130,32 @@ export default{
         privilege:{
             label:'权限',
             editorComponent:{
-                name:"FieldString",
+                component:()=>import("@/components/common/editor/FieldRelatesTag").then(rst=>rst.default),
+                // name:"FieldString",
                 // TODO fieldRelatesTag
                 // name:"field_relates_tag",
-                // config:{
-                //     httpRequest:getPrivilege,
-                //     labelfield:'name',
-                //     valuefield:'id',
-                //     relates:[
-                //         {
-                //             invalidValue:0,
-                //             relateField:'typ',
-                //             requestField:'req_typ',
-                //         }
-                //     ],
-                // },
+                config:{
+                    httpRequest:getPrivilege,
+                    labelfield:'name',
+                    valuefield:'id',
+                    relates:[
+                        {
+                            relateField:["typ"],
+                            invalidValue:{
+                                typ:0,
+                            },
+                            requestField:{
+                                typ:'req_typ'
+                            },
+                            propField:'relateData',
+                        }
+                        // {
+                        //     invalidValue:0,
+                        //     relateField:'typ',
+                        //     requestField:'req_typ',
+                        // }
+                    ],
+                },
                 default(){
                     return [];
                 },
