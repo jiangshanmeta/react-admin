@@ -112,7 +112,6 @@ export default{
             },
             view:{
                 component:viewEnum,
-                // component:()=>import("@/components/common/views/view_enum").then((rst)=>rst.default),
                 config:{
                     enums:typHash
                 },
@@ -130,12 +129,9 @@ export default{
         privilege:{
             label:'权限',
             editorComponent:{
-                component:()=>import("@/components/common/editor/FieldRelatesTag").then(rst=>rst.default),
-                // name:"FieldString",
-                // TODO fieldRelatesTag
-                // name:"field_relates_tag",
+                name:'FieldRelatesTag',
                 config:{
-                    httpRequest:getPrivilege,
+                    getCandidate:getPrivilege,
                     labelfield:'name',
                     valuefield:'id',
                     relates:[
@@ -230,33 +226,34 @@ export default{
                 default:-1,
             },
         },
-        // {
-        //     label:"权限",
-        //     field:"privilege",
-        //     editorComponent:{
-        //         name:"filter_relates_enum",
-        //         config:{
-        //             httpRequest:getPrivilege,
-        //             valuefield:"id",
-        //             labelfield:"name",
-        //             placeholder:"请选择权限",
-        //             allvalue:"all",
-        //             alllabel:"不限",
-        //             relates:[
-        //                 {
-        //                     invalidValue:-1,
-        //                     relateField:'typ',
-        //                     requestField:'req_typ',
-        //                 }
-        //             ],
-        //             handleInvalidRelateIds(){
-        //                 this.$emit("input","all");
-        //             },
-
-        //         },
-        //         default:"all",
-        //     },
-        // },
+        {
+            label:"权限",
+            field:"privilege",
+            editorComponent:{
+                name:'FilterRelatesEnum',
+                config:{
+                    getCandidate:getPrivilege,
+                    valuefield:"id",
+                    labelfield:"name",
+                    placeholder:"请选择权限",
+                    allvalue:"all",
+                    alllabel:"不限",
+                    relates:[
+                        {
+                            relateField:["typ"],
+                            invalidValue:{
+                                typ:-1,
+                            },
+                            requestField:{
+                                typ:'req_typ',
+                            },
+                            propField:"relateData",
+                        }
+                    ],
+                },
+                default:"all",
+            },
+        },
         {
             label:"自定义filter",
             field:"test",

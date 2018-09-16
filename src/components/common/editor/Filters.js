@@ -33,6 +33,8 @@ const defaultFilterComponents = {
     FilterModel:()=>import("./FilterModel").then(rst=>rst.default),
     FilterAsyncEnum:()=>import("./FilterAsyncEnum").then(rst=>rst.default),
     FilterAsyncModel:()=>import("./FilterAsyncModel").then(rst=>rst.default),
+    FilterRelatesEnum:()=>import("./FilterRelatesEnum").then(rst=>rst.default),
+    FilterRelatesModel:()=>import("./FilterRelatesModel").then(rst=>rst.default),
 };
 
 
