@@ -29,6 +29,10 @@ const defaultFilterComponents = {
     FieldString:()=>import("./FieldString").then(rst=>rst.default),
     FieldNumber:()=>import("./FieldNumber").then(rst=>rst.default),
     FieldEnumSelect:()=>import("./FieldEnumSelect").then(rst=>rst.default),
+    FilterEnum:()=>import("./FilterEnum").then(rst=>rst.default),
+    FilterModel:()=>import("./FilterModel").then(rst=>rst.default),
+    FilterAsyncEnum:()=>import("./FilterAsyncEnum").then(rst=>rst.default),
+    FilterAsyncModel:()=>import("./FilterAsyncModel").then(rst=>rst.default),
 };
 
 
@@ -111,39 +115,39 @@ export default class Filters extends React.Component{
         this.$refs[refName] = refValue;
     }
 
+    _getRelateData(relateItem){
+        if(Array.isArray(relateItem.relateField)){
+            return relateItem.relateField.reduce((obj,field)=>{
+                obj[field] = this._formData[field];
+                return obj;
+            },{});
+        }else{
+            return this._formData[relateItem.relateField]
+        }
+    }
+
     _initRelates(){
         this.props.filters.forEach(({field,editorComponent})=>{
             this._setRefMap[field] = this._setRef.bind(this,field);
+            const config = editorComponent.config || {};
+            const relates = config.relates || [];
 
-            if(editorComponent.config && Array.isArray(editorComponent.config.relates)){
-                editorComponent.config.relates.forEach((relateItem)=>{
-                    if(typeof relateItem.handler === 'function'){
-                        const callback = function(newVal){
-                            if(this.$refs[field]){
-                                relateItem.handler.call(this.$refs[field],newVal);
-                            }else{
-                                setTimeout(()=>{
-                                    callback.call(this,newVal);
-                                },0);
-                            }
-                        };
-
-                        reaction(()=>{
-                            // support multi and mono relate field
-                            if(Array.isArray(relateItem.relateField)){
-                                return relateItem.relateField.reduce((obj,relateField)=>{
-                                    obj[relateField] = this._formData[relateField];
-                                    return obj;
-                                },{});
-                            }else{
-                                return this._formData[relateItem.relateField];
-                            }
-                        },callback.bind(this),relateItem.config)
-
-
+            relates.filter((relateItem)=>typeof relateItem.handler === 'function').forEach((relateItem)=>{
+                const callback = function(newVal){
+                    if(this.$refs[field]){
+                        relateItem.handler.call(this.$refs[field],newVal);
+                    }else{
+                        setTimeout(()=>{
+                            callback.call(this,newVal);
+                        },0);
                     }
-                });
-            }
+                };
+
+                reaction(()=>{
+                    return this._getRelateData(relateItem);
+                },callback.bind(this),relateItem.config)
+
+            });
 
         });
     }
@@ -160,8 +164,13 @@ export default class Filters extends React.Component{
         return (
             <Form layout="inline">
                 {this.props.filters.map((item)=>{
-                    const editorComponent = item.editorComponent;
                     const Component = this.filterComponents[item.field];
+                    const config = item.editorComponent.config || {};
+                    const relates = config.relates || [];
+                    const relateProps = relates.filter(item=>item.propField).reduce((obj,item)=>{
+                        obj[item.propField] = this._getRelateData(item);
+                        return obj;
+                    },Object.create(null));
 
                     return (
                         <Form.Item key={item.field} label={item.label}>
@@ -169,7 +178,8 @@ export default class Filters extends React.Component{
                                 ref={this._setRefMap[item.field]}
                                 value={this._formData[item.field]}
                                 onChange={this._changeHandlerMap[item.field]}
-                                {...(editorComponent.config || {})}
+                                {...config}
+                                {...relateProps}
                             />
                         </Form.Item>
                     )

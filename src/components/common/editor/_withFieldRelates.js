@@ -50,7 +50,7 @@ export default function withFieldRelates(Component){
             const cacheObj = JSON.parse(JSON.stringify(this.props.relateData));
 
             new Promise((resolve,reject)=>{
-                this.props.httpRequest.call(this,resolve,queryObj)
+                this.props.getCandidate.call(this,resolve,queryObj)
             }).then((candidate)=>{
                 this.setCacheOptions(candidate,cacheObj)
             }).catch(logError);
@@ -65,13 +65,10 @@ export default function withFieldRelates(Component){
                 let cacheKey = cacheObj[this.relateKeys[counter++]];
                 if(!start.hasOwnProperty(cacheKey)){
                     set(start,cacheKey,{})
-                    // this.$set(start,cacheKey,{});
-
                 }
                 start = start[cacheKey];
             }
             set(start,cacheObj[this.relateKeys[len-1]],options);
-            // this.$set(start,cacheObj[this.relateKeys[len-1]],options);
         }
 
 
@@ -141,7 +138,7 @@ export default function withFieldRelates(Component){
 
     FieldRelates.propTypes = {
         relates:PropTypes.array.isRequired,
-        httpRequest:PropTypes.func.isRequired,
+        getCandidate:PropTypes.func.isRequired,
         handleInvalidRelateIds:PropTypes.func,
         relateData:PropTypes.object.isRequired,
     };

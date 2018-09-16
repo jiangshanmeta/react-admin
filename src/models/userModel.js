@@ -149,11 +149,6 @@ export default{
                             },
                             propField:'relateData',
                         }
-                        // {
-                        //     invalidValue:0,
-                        //     relateField:'typ',
-                        //     requestField:'req_typ',
-                        // }
                     ],
                 },
                 default(){
@@ -222,19 +217,19 @@ export default{
                 default:"",
             },
         },
-        // {
-        //     label:"类型",
-        //     field:"typ",
-        //     editorComponent:{
-        //         name:"filter_enum",
-        //         config:{
-        //             candidate:typEnum,
-        //             allvalue:-1,
-        //             alllabel:"全部",
-        //         },
-        //         default:-1,
-        //     },
-        // },
+        {
+            label:"类型",
+            field:"typ",
+            editorComponent:{
+                name:"FilterEnum",
+                config:{
+                    candidate:typEnum,
+                    allvalue:-1,
+                    alllabel:"全部",
+                },
+                default:-1,
+            },
+        },
         // {
         //     label:"权限",
         //     field:"privilege",

@@ -38,17 +38,17 @@ export default function withFilterAll(Component){
         }
     }
 
-    Component.propTypes = {
+    WithFilterAllComponent.propTypes = {
         alllabel:PropTypes.string,
     }
     
-    Component.defaultProps = {
+    WithFilterAllComponent.defaultProps = {
         alllabel:"不限",
         allvalue:"",
     }
 
-    propsCandidateMixin(Component);
-    propsLabelValueMixin(Component);
+    propsCandidateMixin(WithFilterAllComponent);
+    propsLabelValueMixin(WithFilterAllComponent);
 
     return WithFilterAllComponent;
 }

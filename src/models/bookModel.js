@@ -82,32 +82,31 @@ export default{
         store:{
             label:"店铺",
             editorComponent:{
-                name:"FieldString",
-                // TODO
-                // name:"field_async_enum_select",
-                // config:{
-                //     httpRequest:getStore,
-                //     labelfield:"storename",
-                //     valuefield:"_id",
-                // },
+                name:"FieldAsyncEnumSelect",
+                config:{
+                    getCandidate:getStore,
+                    labelfield:"storename",
+                    valuefield:"_id",
+                },
                 default:"",
             },
         },
         saler:{
             label:"销售",
             editorComponent:{
-                name:"FieldString",
-                // TODO
-                // name:"field_relates_enum_select",
-                // config:{
-                //     relates:[
-                //         {
-                //             invalidValue:"",
-                //             relateField:"store",
-                //         }
-                //     ],
-                //     httpRequest:getSaler,
-                // },
+                name:"FieldRelatesEnumSelect",
+                config:{
+                    relates:[
+                        {
+                            relateField:["store"],
+                            invalidValue:{
+                                store:"",
+                            },
+                            propField:"relateData",
+                        }
+                    ],
+                    getCandidate:getSaler,
+                },
                 default:"",
             },
         },
@@ -121,9 +120,6 @@ export default{
                 handler(info,config){
                     return `${info.name} ${info.position}`
                 },
-
-                
-                // component:()=>import("@/components/book/views/test_view_join").then((rst)=>rst.default),
                 config:{
                     glue:" 的收货地址是 ",
                 },
@@ -144,6 +140,7 @@ export default{
                 dialogConfig:{
                     size:"large",
                     title:"新建订单",
+                    width:"80%",
                 },
                 createBtnConfig:{
                     text:"确认创建",
@@ -196,6 +193,22 @@ export default{
             editorComponent:{
                 name:"FieldNumber",
                 default:500,
+                config:{
+                    relates:[
+                        {
+                            relateField:"customername",
+                            handler(customername){
+                                console.log(customername);
+                                if(customername === 'lelouch'){
+                                    this.props.onChange(2333);
+                                }
+                            },
+                            config:{
+                                fireImmediately:true,
+                            },
+                        },
+                    ],
+                },
             }
         },
     ],
