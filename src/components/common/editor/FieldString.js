@@ -1,3 +1,3 @@
-import genBasicInput from "./_genBasicInput";
+import withBasicInput from "./_withBasicInput";
 
-export default genBasicInput('text');
+export default withBasicInput('text');

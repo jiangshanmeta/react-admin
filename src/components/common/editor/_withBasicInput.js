@@ -5,12 +5,13 @@ import {
 
 import propsModelMixin from "./_propsModelMixin"
 
-export default function genBasicInput(type,component){
+export default function withBasicInput(type,component){
     let Component = Input;
     if(component){
         Component = Input[component]
     }
 
+    @propsModelMixin
     class FieldBasic extends React.Component{
         handleChange = (e)=>{
             this.props.onChange(e.target.value);
@@ -26,8 +27,6 @@ export default function genBasicInput(type,component){
             )
         }
     }
-
-    propsModelMixin(FieldBasic);
 
     return FieldBasic
 }

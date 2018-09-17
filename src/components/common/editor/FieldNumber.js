@@ -4,8 +4,20 @@ import {
     InputNumber
 } from 'antd';
 
-
 export default class FieldNumber extends React.Component{
+    static propTypes = {
+        value:PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
+        onChange:PropTypes.func.isRequired,
+        invalidValue:PropTypes.number,
+    }
+
+    static defaultProps = {
+        invalidValue:0,
+    }
+
     handleChange = (value)=>{
         if(value === undefined){
             value = this.props.invalidValue;
@@ -22,17 +34,4 @@ export default class FieldNumber extends React.Component{
             />
         )
     }
-}
-
-FieldNumber.propTypes = {
-    value:PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]).isRequired,
-    onChange:PropTypes.func.isRequired,
-    invalidValue:PropTypes.number,
-}
-
-FieldNumber.defaultProps = {
-    invalidValue:0,
 }

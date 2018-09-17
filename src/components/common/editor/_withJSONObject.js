@@ -17,6 +17,15 @@ function defaultStruct(){
 export default function(Component){
     @observer
     class WithJSONObject extends React.Component{
+        static propTypes = {
+            value:PropTypes.any.isRequired,
+            struct:PropTypes.func,
+        }
+
+        static defaultProps = {
+            struct:defaultStruct,
+        }
+
         @observable localValue
         constructor(props){
             super(props);
@@ -59,15 +68,6 @@ export default function(Component){
                 />
             )
         }
-    }
-
-    WithJSONObject.propTypes = {
-        value:PropTypes.any.isRequired,
-        struct:PropTypes.func,
-    }
-
-    WithJSONObject.defaultProps = {
-        struct:defaultStruct,
     }
 
     return WithJSONObject;

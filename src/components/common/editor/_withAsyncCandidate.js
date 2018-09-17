@@ -2,8 +2,12 @@ import React from "react"
 import PropTypes from "prop-types";
 import {logError} from "@/widget/utility"
 
-function withAsyncCandidate(Component){
-    class WithAsyncCandidateComponent extends React.Component{
+export default function withAsyncCandidate(Component){
+    return class WithAsyncCandidateComponent extends React.Component{
+        static propTypes = {
+            getCandidate:PropTypes.func.isRequired,
+        }
+
         constructor(props){
             super(props);
             this.state = {
@@ -45,11 +49,4 @@ function withAsyncCandidate(Component){
             )
         }
     }
-    WithAsyncCandidateComponent.propTypes = {
-        getCandidate:PropTypes.func.isRequired,
-    }
-
-    return WithAsyncCandidateComponent
 }
-
-export default withAsyncCandidate;

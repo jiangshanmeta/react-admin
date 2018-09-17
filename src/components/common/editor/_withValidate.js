@@ -9,10 +9,11 @@ import {
     observer
 } from "mobx-react"
 
-import validateOptionMixin from "./_validateOptionMixin";
+import propsValidateOptionMixin from "./_propsValidateOptionMixin";
 
 export default function withValidate(validateOption,propMixins){
     return function(Component){
+        @propsValidateOptionMixin
         @observer
         class ComponentWithValidate extends React.Component{
             constructor(props){
@@ -44,7 +45,6 @@ export default function withValidate(validateOption,propMixins){
                 )
             }
         }
-        validateOptionMixin(ComponentWithValidate);
 
         propMixins.forEach((propMixin)=>{
             propMixin(ComponentWithValidate);

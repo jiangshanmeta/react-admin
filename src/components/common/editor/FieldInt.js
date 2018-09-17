@@ -4,6 +4,11 @@ import PropTypes from "prop-types";
 import FieldNumber from "./FieldNumber"
 
 export default class FieldInt extends React.PureComponent{
+    static propTypes = {
+        value:PropTypes.number.isRequired,
+        onChange:PropTypes.func.isRequired,
+    }
+
     handleChange = (value)=>{
         if(!Number.isInteger(value)){
             value = this.props.value;
@@ -19,9 +24,4 @@ export default class FieldInt extends React.PureComponent{
             />
         )
     }
-}
-
-FieldInt.propTypes = {
-    value:PropTypes.number.isRequired,
-    onChange:PropTypes.func.isRequired,
 }

@@ -19,4 +19,6 @@ export default function(Component){
 
     defaultProps.isCandidateValid = true;
     defaultProps.handleInvalidValue = noop;
+
+    return Component;
 }

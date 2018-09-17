@@ -21,6 +21,18 @@ function noop(){}
 export default function withFieldRelates(Component){
     @observer
     class FieldRelates extends React.Component{
+        static propTypes = {
+            relates:PropTypes.array.isRequired,
+            getCandidate:PropTypes.func.isRequired,
+            handleInvalidRelateIds:PropTypes.func,
+            relateData:PropTypes.object.isRequired,            
+        }
+
+        static defaultProps = {
+            handleInvalidRelateIds:noop
+        }
+
+
         @observable optionsCache = {};
         constructor(props){
             super(props);
@@ -133,18 +145,6 @@ export default function withFieldRelates(Component){
             )
         }
 
-
-    }
-
-    FieldRelates.propTypes = {
-        relates:PropTypes.array.isRequired,
-        getCandidate:PropTypes.func.isRequired,
-        handleInvalidRelateIds:PropTypes.func,
-        relateData:PropTypes.object.isRequired,
-    };
-
-    FieldRelates.defaultProps = {
-        handleInvalidRelateIds:noop
     }
 
     return FieldRelates;

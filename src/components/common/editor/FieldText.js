@@ -1,3 +1,3 @@
-import genBasicInput from "./_genBasicInput";
+import withBasicInput from "./_withBasicInput";
 
-export default genBasicInput('textarea','TextArea');
+export default withBasicInput('textarea','TextArea');

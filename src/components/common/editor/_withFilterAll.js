@@ -14,8 +14,19 @@ import propsLabelValueMixin from "./_propsLabelValueMixin";
 
 
 export default function withFilterAll(Component){
+    @propsLabelValueMixin
+    @propsCandidateMixin
     @observer
     class WithFilterAllComponent extends React.Component{
+        static propTypes = {
+            alllabel:PropTypes.string,
+        }
+
+        static defaultProps = {
+            alllabel:"不限",
+            allvalue:"",
+        }
+
         @computed get filterCandidate(){
             const [...arr] = this.props.candidate;
             arr.unshift({
@@ -37,18 +48,6 @@ export default function withFilterAll(Component){
             )
         }
     }
-
-    WithFilterAllComponent.propTypes = {
-        alllabel:PropTypes.string,
-    }
-    
-    WithFilterAllComponent.defaultProps = {
-        alllabel:"不限",
-        allvalue:"",
-    }
-
-    propsCandidateMixin(WithFilterAllComponent);
-    propsLabelValueMixin(WithFilterAllComponent);
 
     return WithFilterAllComponent;
 }
