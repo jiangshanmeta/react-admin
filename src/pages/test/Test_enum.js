@@ -8,17 +8,7 @@ import FieldAsyncEnumRadio from "@/components/common/editor/FieldAsyncEnumRadio"
 import FieldAsyncEnumSelect from "@/components/common/editor/FieldAsyncEnumSelect"
 import FieldAsyncModel from "@/components/common/editor/FieldAsyncModel"
 
-import TestTable from "./_testTable"
-
-const Components = {
-    FieldEnumRadio,
-    FieldEnumSelect,
-    FieldModel,
-    FieldAsyncEnumRadio,
-    FieldAsyncEnumSelect,
-    FieldAsyncModel,
-}
-
+import MetaTest from "./_metaTest";
 
 const FieldEnumRadioCandidate = [
     {label:"item0",value:0},
@@ -47,113 +37,77 @@ const FieldModelCandidate = [
     {label:"itemL",value:21},
 ];
 
+function getAsyncCandidate(enums,cb){
+    setTimeout(()=>{
+        cb(enums);
+    },1000);
+}
 
 
 
-export default class Test_enum extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            FieldEnumRadio:100,
-            FieldEnumSelect:1,
-            FieldModel:11,
-            FieldAsyncEnumRadio:100,
-            FieldAsyncEnumSelect:2,
-            FieldAsyncModel:16,
-        }
+const components = {
+    FieldEnumRadio,
+    FieldEnumSelect,
+    FieldModel,
+    FieldAsyncEnumRadio,
+    FieldAsyncEnumSelect,
+    FieldAsyncModel,
+}
 
-        const fields = [
-            "FieldEnumRadio",
-            "FieldEnumSelect",
-            "FieldModel",
-            "FieldAsyncEnumRadio",
-            "FieldAsyncEnumSelect",
-            "FieldAsyncModel",
-        ];
+const defaultValues = {
+    FieldEnumRadio:100,
+    FieldEnumSelect:1,
+    FieldModel:11,
+    FieldAsyncEnumRadio:100,
+    FieldAsyncEnumSelect:2,
+    FieldAsyncModel:16,
+}
 
-        fields.forEach((field)=>{
-            this[`handle${field}Change`] = this.handleChange.bind(this,field);
-        })
+const fieldConfig = {
+    FieldEnumRadio:{
+        candidate:FieldEnumRadioCandidate,
+        handleInvalidValue(value,setvalue){
+            this.props.onChange(setvalue[setvalue.length-1]);
+        },
+    },
+    FieldEnumSelect:{
+        candidate:FieldEnumSelectCandidate,
+    },
+    FieldModel:{
+        candidate:FieldModelCandidate,
+    },
+    FieldAsyncEnumRadio:{
+        getCandidate:getAsyncCandidate.bind(null,FieldEnumRadioCandidate),
+        handleInvalidValue(value,setvalue){
+            console.log(value,setvalue);
+            this.props.onChange(setvalue[0]);
+        },
+    },
+    FieldAsyncEnumSelect:{
+        getCandidate:getAsyncCandidate.bind(null,FieldEnumSelectCandidate),
+    },
+    FieldAsyncModel:{
+        getCandidate:getAsyncCandidate.bind(null,FieldModelCandidate)
+    },
+};
 
-    
-        this.config = {
-            FieldEnumRadio:{
-                candidate:FieldEnumRadioCandidate,
-                handleInvalidValue(value,setvalue){
-                    this.props.onChange(setvalue[setvalue.length-1]);
-                },
-            },
-            FieldEnumSelect:{
-                candidate:FieldEnumSelectCandidate,
-            },
-            FieldModel:{
-                candidate:FieldModelCandidate,
-            },
-            FieldAsyncEnumRadio:{
-                getCandidate:this.getAsyncCandidate.bind(null,FieldEnumRadioCandidate),
-                handleInvalidValue(value,setvalue){
-                    console.log(value,setvalue);
-                    this.props.onChange(setvalue[0]);
-                },
-            },
-            FieldAsyncEnumSelect:{
-                getCandidate:this.getAsyncCandidate.bind(null,FieldEnumSelectCandidate),
-            },
-            FieldAsyncModel:{
-                getCandidate:this.getAsyncCandidate.bind(null,FieldModelCandidate)
-            },
-
-
-        }
-
-
-    }
+const renderFields = [
+    'FieldEnumRadio',
+    'FieldEnumSelect',
+    'FieldModel',
+    'FieldAsyncEnumRadio',
+    'FieldAsyncEnumSelect',
+    'FieldAsyncModel',
+];
 
 
-    handleChange(field,value){
-        this.setState({
-            [field]:value
-        })
-    }
-
-
-    renderField(Field){
-        const FieldComponent = Components[Field];
-
-        return (
-            <tr>
-                <td>{Field}</td>
-                <td>{this.state[Field]} || {typeof this.state[Field]}</td>
-                <td>
-                    <FieldComponent
-                        value={this.state[Field]}
-                        onChange={this[`handle${Field}Change`]}
-                        {...(this.config[Field] || {})}
-                    />
-                </td>
-            </tr>
-        )
-    }
-
-
-    getAsyncCandidate(enums,cb){
-        setTimeout(()=>{
-            cb(enums);
-        },1000);
-    }
-
-    render(){
-        return (
-            <TestTable>
-                <React.Fragment>
-                    {this.renderField('FieldEnumRadio')}
-                    {this.renderField('FieldEnumSelect')}
-                    {this.renderField('FieldModel')}
-                    {this.renderField('FieldAsyncEnumRadio')}
-                    {this.renderField('FieldAsyncEnumSelect')}
-                    {this.renderField('FieldAsyncModel')}
-                </React.Fragment>
-            </TestTable>
-        );
-    }
+export default function(){
+    return (
+        <MetaTest
+            components={components}
+            defaultValues={defaultValues}
+            fieldConfig={fieldConfig}
+            renderFields={renderFields}
+        />
+    )
 }

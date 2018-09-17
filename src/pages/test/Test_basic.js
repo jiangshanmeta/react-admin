@@ -6,9 +6,10 @@ import FieldPwd from "@/components/common/editor/FieldPwd"
 import FieldNumber from "@/components/common/editor/FieldNumber"
 import FieldInt from "@/components/common/editor/FieldInt"
 
-import TestTable from "./_testTable"
+import MetaTest from "./_metaTest";
 
-const Components = {
+
+const components = {
     FieldString,
     FieldText,
     FieldPwd,
@@ -16,86 +17,48 @@ const Components = {
     FieldInt,
 };
 
-export default class Test_basic extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            FieldString:"",
-            FieldText:"",
-            FieldPwd:"",
-            FieldNumber:10,
-            FieldInt:1,
-        };
+const defaultValues = {
+    FieldString:"",
+    FieldText:"",
+    FieldPwd:"",
+    FieldNumber:10,
+    FieldInt:1,
+};
 
-        const fields = [
-            "FieldString",
-            "FieldText",
-            "FieldPwd",
-            "FieldNumber",
-            "FieldInt",
-        ];
+const fieldConfig = {
+    FieldString:{
+        placeholder:"请输入",
+    },
+    FieldText:{
+        placeholder:"测试textarea",
+    },
+    FieldPwd:{
+        placeholder:"测试FieldPwd",
+    },
+    FieldNumber:{
+        defaultValue:100,
+        invalidValue:15
+    },
+    FieldInt:{
 
-        fields.forEach((field)=>{
-            this[`handle${field}Change`] = this.handleChange.bind(this,field);
-        });
+    },
+}
 
-        this.config = {
-            FieldString:{
-                placeholder:"请输入",
-            },
-            FieldText:{
-                placeholder:"测试textarea",
-            },
-            FieldPwd:{
-                placeholder:"测试FieldPwd",
-            },
-            FieldNumber:{
-                defaultValue:100,
-                invalidValue:15
-            },
-            FieldInt:{
+const renderFields = [
+    'FieldString',
+    'FieldText',
+    'FieldPwd',
+    'FieldNumber',
+    'FieldInt',
+];
 
-            },
-        };
-
-    
-    }
-
-    handleChange(field,value){
-        this.setState({
-            [field]:value,
-        })
-    }
-
-    renderField(Field){
-        const FieldComponent = Components[Field];
-
-        return (
-            <tr>
-                <td>{Field}</td>
-                <td>{this.state[Field]}</td>
-                <td>
-                    <FieldComponent
-                        value={this.state[Field]}
-                        onChange={this[`handle${Field}Change`]}
-                        {...(this.config[Field] || {})}
-                    />
-                </td>
-            </tr>
-        )
-    }
-
-    render(){
-        return (
-            <TestTable>
-                <React.Fragment>
-                    {this.renderField('FieldString')}
-                    {this.renderField('FieldText')}
-                    {this.renderField('FieldPwd')}
-                    {this.renderField('FieldNumber')}
-                    {this.renderField('FieldInt')}
-                </React.Fragment>
-            </TestTable>
-        )
-    }
+export default function(){
+    return (
+        <MetaTest
+            components={components}
+            defaultValues={defaultValues}
+            fieldConfig={fieldConfig}
+            renderFields={renderFields}
+        />
+    )
 }
